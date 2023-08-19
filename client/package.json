@@ -1,8 +1,11 @@
 {
-  "homepage": "https://horizon-ui.com/horizon-ui-chakra",
-  "name": "horizon-ui-chakra",
+  "name": "transcriber",
   "version": "1.0.1",
   "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "main.js",
   "dependencies": {
     "@chakra-ui/icons": "^1.1.5",
     "@chakra-ui/react": "1.8.8",
@@ -34,10 +37,13 @@
     "react-table": "^7.7.0",
     "stylis": "^4.1.1",
     "stylis-plugin-rtl": "2.0.2",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "electron": "26.0.0",
+    "electron-is-dev": "2.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "electron main.js",
+    "react-start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
