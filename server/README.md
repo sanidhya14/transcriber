@@ -2,7 +2,7 @@
 
 This is the Django hosted backend for the application.
 
-## Project structure:
+## Project structure: [Remove once setup]
 
 ```
 my_project/
@@ -47,37 +47,37 @@ my_project/
 
 This will keep current session in virtual envionment. Useful for active development.
 
-    1. Create and activate the virtual environment
+1. Create and activate the virtual environment
 
-    ```
-    virtualenv venv
-    source venv/bin/activate
-    ```
+```
+virtualenv venv
+source venv/bin/activate
+```
 
-    2. Install requirements
+2. Install requirements
 
-    ```
-    pip3 install -r requirements/base.txt
-    ```
+```
+pip3 install -r requirements/base.txt
+```
 
-    3. Run Server
+3. Run Server
 
-    ```
-    python3 manage.py runserver
-    ```
+```
+python3 manage.py runserver
+```
 
-    4. Deactivate virtual env
+4. Deactivate virtual env
 
-    ```
-    deactivate
-    ```
+```
+deactivate
+```
 
 ### B. Run for Testing
 
 This will simply initiate the server with pre-defined script.
 
-    1. Run
+1. Run
 
-    ```
-    ./scripts/run_server.sh
-    ```
+```
+./scripts/run_server.sh
+```
