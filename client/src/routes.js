@@ -5,7 +5,12 @@ import {
   MdBarChart,
   MdPerson,
   MdHome,
+  MdTranscribe,
   MdLock,
+  MdHistory,
+  MdSettings,
+  MdOutlineHelp,
+  MdInfoOutline,
   MdOutlineShoppingCart,
 } from "react-icons/md";
 
@@ -14,21 +19,62 @@ import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
-import RTL from "views/admin/rtl";
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
 
 const routes = [
   {
-    name: "Main Dashboard",
+    name: "Home",
+    layout: "/admin",
+    path: "/home",
+    icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+    component: MainDashboard,
+  },
+  {
+    name: "Transcribe",
+    layout: "/admin",
+    path: "/transcribe",
+    icon: <Icon as={MdTranscribe} width='20px' height='20px' color='inherit' />,
+    component: MainDashboard,
+  },
+  {
+    name: "History",
+    layout: "/admin",
+    path: "/history",
+    icon: <Icon as={MdHistory} width='20px' height='20px' color='inherit' />,
+    component: MainDashboard,
+  },
+  {
+    name: "Settings",
+    layout: "/admin",
+    path: "/setting",
+    icon: <Icon as={MdSettings} width='20px' height='20px' color='inherit' />,
+    component: MainDashboard,
+  },
+  {
+    name: "Help Center",
+    layout: "/admin",
+    path: "/help",
+    icon: <Icon as={MdOutlineHelp} width='20px' height='20px' color='inherit' />,
+    component: MainDashboard,
+  },
+  {
+    name: "About",
+    layout: "/admin",
+    path: "/about",
+    icon: <Icon as={MdInfoOutline} width='20px' height='20px' color='inherit' />,
+    component: MainDashboard,
+  },
+  {
+    name: "Main Dashboard [temp]",
     layout: "/admin",
     path: "/default",
     icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
     component: MainDashboard,
   },
   {
-    name: "NFT Marketplace",
+    name: "NFT Marketplace [temp]",
     layout: "/admin",
     path: "/nft-marketplace",
     icon: (
@@ -43,33 +89,26 @@ const routes = [
     secondary: true,
   },
   {
-    name: "Data Tables",
+    name: "Data Tables [temp]",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/data-tables",
     component: DataTables,
   },
   {
-    name: "Profile",
+    name: "Profile [temp]",
     layout: "/admin",
     path: "/profile",
     icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
     component: Profile,
   },
   {
-    name: "Sign In",
+    name: "Sign In [temp]",
     layout: "/auth",
     path: "/sign-in",
     icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
     component: SignInCentered,
-  },
-  {
-    name: "RTL Admin",
-    layout: "/rtl",
-    path: "/rtl-default",
-    icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-    component: RTL,
-  },
+  }
 ];
 
 export default routes;
