@@ -39,7 +39,8 @@
     "stylis-plugin-rtl": "2.0.2",
     "web-vitals": "^1.1.2",
     "electron": "26.0.0",
-    "electron-is-dev": "2.0.0"
+    "electron-is-dev": "2.0.0",
+    "react-circle-progress-bar": "0.1.4"
   },
   "scripts": {
     "start": "electron main.js",

@@ -20,6 +20,12 @@ import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 
+// New imports
+import Home from "views/home";
+import Transcribe from "views/transcribe";
+import History from "views/history";
+import Settings from "views/settings";
+
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
 
@@ -29,28 +35,28 @@ const routes = [
     layout: "/admin",
     path: "/home",
     icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-    component: MainDashboard,
+    component: Home,
   },
   {
     name: "Transcribe",
     layout: "/admin",
     path: "/transcribe",
     icon: <Icon as={MdTranscribe} width='20px' height='20px' color='inherit' />,
-    component: MainDashboard,
+    component: Transcribe,
   },
   {
     name: "History",
     layout: "/admin",
     path: "/history",
     icon: <Icon as={MdHistory} width='20px' height='20px' color='inherit' />,
-    component: MainDashboard,
+    component: History,
   },
   {
     name: "Settings",
     layout: "/admin",
     path: "/setting",
     icon: <Icon as={MdSettings} width='20px' height='20px' color='inherit' />,
-    component: MainDashboard,
+    component: Settings,
   },
   {
     name: "Help Center",
