@@ -1,14 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
-  Grid,
-  GridItem,
-  Center,
-  Flex,
-  Text,
-  useColorModeValue,
   Button,
-  IconButton,
   Heading,
   Select,
   Radio,
@@ -17,16 +10,13 @@ import {
   Checkbox,
   FormControl,
   FormLabel,
-  Input,
   Switch,
-  VStack,
 } from "@chakra-ui/react";
 import Card from "./components/Card";
 
 export default function Settings() {
-
-  const [defaultLanguage, setDefaultLanguage] = useState('Auto-Detect');
-  const [transcriptionMode, setTranscriptionMode] = useState('Fast');
+  const [defaultLanguage, setDefaultLanguage] = useState("Auto-Detect");
+  const [transcriptionMode, setTranscriptionMode] = useState("Fast");
   const [outputFormats, setOutputFormats] = useState([]);
   const [speakerIdentification, setSpeakerIdentification] = useState(true);
   const [wordLevelTimestamps, setWordLevelTimestamps] = useState(true);
@@ -37,11 +27,11 @@ export default function Settings() {
 
   const handleDefaultLanguageChange = (value) => {
     setDefaultLanguage(value);
-  }
+  };
 
   const handleTranscriptionModeChange = (value) => {
     setTranscriptionMode(value);
-  }
+  };
 
   const handleOutputFormatChange = (format) => {
     if (outputFormats.includes(format)) {
@@ -53,29 +43,27 @@ export default function Settings() {
 
   const handleSpeakerIdentificationChange = (flag) => {
     setSpeakerIdentification(flag);
-  }
+  };
 
   const handleWordLevelTimestampsChange = (flag) => {
     setWordLevelTimestamps(flag);
-  }
+  };
 
   const handleAutoCorrectionChange = (flag) => {
     setAutoCorrection(flag);
-  }
+  };
 
   const handleProfanityFilteringChange = (flag) => {
     setProfanityFiltering(flag);
-  }
+  };
 
   const handleCompletionNotificationChange = (flag) => {
     setCompletionNotification(flag);
-  }
+  };
 
   const handleDarkModeChange = (flag) => {
     setdarkMode(flag);
-  }
-
-
+  };
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }} height="100vh">
@@ -98,7 +86,10 @@ export default function Settings() {
         </FormControl>
         <FormControl mb={4}>
           <FormLabel>Transcription Mode</FormLabel>
-          <RadioGroup value={transcriptionMode} onChange={handleTranscriptionModeChange}>
+          <RadioGroup
+            value={transcriptionMode}
+            onChange={handleTranscriptionModeChange}
+          >
             <Stack spacing={2}>
               <Radio value="Fast">Fast</Radio>
               <Radio value="Balanced">Balanced</Radio>
@@ -114,26 +105,26 @@ export default function Settings() {
           <FormLabel>Output formats</FormLabel>
           <Stack spacing={2}>
             <Checkbox
-              isChecked={outputFormats.includes('txt')}
-              onChange={() => handleOutputFormatChange('txt')}
+              isChecked={outputFormats.includes("txt")}
+              onChange={() => handleOutputFormatChange("txt")}
             >
               txt
             </Checkbox>
             <Checkbox
-              isChecked={outputFormats.includes('srt')}
-              onChange={() => handleOutputFormatChange('srt')}
+              isChecked={outputFormats.includes("srt")}
+              onChange={() => handleOutputFormatChange("srt")}
             >
               srt
             </Checkbox>
             <Checkbox
-              isChecked={outputFormats.includes('vtt')}
-              onChange={() => handleOutputFormatChange('vtt')}
+              isChecked={outputFormats.includes("vtt")}
+              onChange={() => handleOutputFormatChange("vtt")}
             >
               vtt
             </Checkbox>
             <Checkbox
-              isChecked={outputFormats.includes('json')}
-              onChange={() => handleOutputFormatChange('json')}
+              isChecked={outputFormats.includes("json")}
+              onChange={() => handleOutputFormatChange("json")}
             >
               json
             </Checkbox>
@@ -148,16 +139,19 @@ export default function Settings() {
           <FormLabel>Identify the speakers</FormLabel>
           <Switch
             isChecked={speakerIdentification}
-            onChange={() => handleSpeakerIdentificationChange(!speakerIdentification)}
+            onChange={() =>
+              handleSpeakerIdentificationChange(!speakerIdentification)
+            }
           />
         </FormControl>
-
 
         <FormControl display="flex" justifyContent="space-between" mb={4}>
           <FormLabel>Detect Word Level Timestamps</FormLabel>
           <Switch
             isChecked={wordLevelTimestamps}
-            onChange={() => handleWordLevelTimestampsChange(!wordLevelTimestamps)}
+            onChange={() =>
+              handleWordLevelTimestampsChange(!wordLevelTimestamps)
+            }
           />
         </FormControl>
 
@@ -185,10 +179,11 @@ export default function Settings() {
           <FormLabel>Notify on transcription job completion</FormLabel>
           <Switch
             isChecked={completionNotification}
-            onChange={() => handleCompletionNotificationChange(!completionNotification)}
+            onChange={() =>
+              handleCompletionNotificationChange(!completionNotification)
+            }
           />
         </FormControl>
-
 
         <Heading as="h2" size="md" mt={8} mb={4}>
           Themes
@@ -220,24 +215,24 @@ export default function Settings() {
  *  Primary Preferrences
  *  Default Language: [Select]
  *  Transcription Mode: [Radio]
- *   
+ *
  *  Export
  *  Default Location: [File selector]
  *  Output Formats: [Checkboxes]
- *  
+ *
  *  Post-Processing:
  *  Identify speakers [Toggle]
  *  Identify Word level timestamps [Toggle]
  *  Punctuation [Toggle]
  *  Profanity Filter [Toggle]
- *  
+ *
  *  Notifications:
  *  Notify on transcription completion: [Toggle]
- * 
+ *
  *  Themes
  *  Dark mode: [Toggle]
- * 
+ *
  *  Storage
  *  Cached Assets (Download All) (Clear All)
- * 
+ *
  */

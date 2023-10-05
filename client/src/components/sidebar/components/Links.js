@@ -1,11 +1,8 @@
-/* eslint-disable */
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-// chakra imports
 import { Box, Flex, HStack, Text, useColorModeValue } from "@chakra-ui/react";
 
 export function SidebarLinks(props) {
-  //   Chakra color mode
   let location = useLocation();
   let activeColor = useColorModeValue("gray.700", "white");
   let inactiveColor = useColorModeValue(
@@ -127,7 +124,6 @@ export function SidebarLinks(props) {
       }
     });
   };
-  //  BRAND
   return createLinks(routes);
 }
 

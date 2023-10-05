@@ -1,6 +1,5 @@
-// Chakra imports
 import { Button, Flex, Input, useColorModeValue } from "@chakra-ui/react";
-// Assets
+
 import React from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -12,20 +11,21 @@ function Dropzone(props) {
   const borderColor = useColorModeValue("secondaryGray.100", "whiteAlpha.100");
   return (
     <Flex
-      align='center'
-      justify='center'
+      align="center"
+      justify="center"
       bg={bg}
-      border='1px dashed'
+      border="1px dashed"
       borderColor={borderColor}
-      borderRadius='16px'
-      w='100%'
-      h='70%'
-      minH='70%'
-      cursor='pointer'
+      borderRadius="16px"
+      w="100%"
+      h="70%"
+      minH="70%"
+      cursor="pointer"
       {...getRootProps({ className: "dropzone" })}
-      {...rest}>
-      <Input variant='main' {...getInputProps()} />
-      <Button variant='no-effects'>{content}</Button>
+      {...rest}
+    >
+      <Input variant="main" {...getInputProps()} />
+      <Button variant="no-effects">{content}</Button>
     </Flex>
   );
 }

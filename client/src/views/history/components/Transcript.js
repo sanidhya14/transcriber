@@ -1,7 +1,6 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
-  Flex,
   Grid,
   Heading,
   Text,
@@ -12,13 +11,16 @@ import {
   Icon,
   Avatar,
   Button,
-} from '@chakra-ui/react';
-import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
+} from "@chakra-ui/react";
+import { FaPlay, FaPause, FaForward, FaBackward } from "react-icons/fa";
 import Card from "./Card.js";
 import Menu from "./MainMenu.js";
 
-import { MdCalendarMonth, MdCalendarViewDay, MdEdit, MdEditDocument, MdEditNote, MdLockClock, MdOutlineAccessTime, MdOutlineTimer, MdTimer } from 'react-icons/md';
-import { ClockIcon } from 'components/icons/Icons';
+import {
+  MdCalendarMonth,
+  MdEdit,
+  MdOutlineAccessTime,
+} from "react-icons/md";
 
 const Transcript = () => {
   return (
@@ -31,23 +33,33 @@ const Transcript = () => {
       >
         {/* Header Section */}
         <Card p="1rem" height="100%" width="100%">
-        <HStack direction="row" spacing={4}> 
-          <Heading fontSize="2xl">Aug Weekly Sync-up</Heading>
-          <Spacer />
-          <Button>
-          <Icon as={MdEdit} width='20px' height='20px' color='inherit' />
-          <Text fontSize="sm">Editor</Text>
-          </Button>
-          <Menu />
+          <HStack direction="row" spacing={4}>
+            <Heading fontSize="2xl">Aug Weekly Sync-up</Heading>
+            <Spacer />
+            <Button>
+              <Icon as={MdEdit} width="20px" height="20px" color="inherit" />
+              <Text fontSize="sm">Editor</Text>
+            </Button>
+            <Menu />
           </HStack>
           <HStack direction="row" mt="2rem" spacing={4}>
             <HStack direction="row">
-                <Icon as={MdCalendarMonth} width='20px' height='20px' color='inherit' />
-                <Text fontSize="sm">Fri, Aug 18, 2023 8:00 PM</Text>
+              <Icon
+                as={MdCalendarMonth}
+                width="20px"
+                height="20px"
+                color="inherit"
+              />
+              <Text fontSize="sm">Fri, Aug 18, 2023 8:00 PM</Text>
             </HStack>
             <HStack direction="row">
-                <Icon as={MdOutlineAccessTime} width='20px' height='20px' color='inherit' />
-                <Text fontSize="sm">3:45</Text>
+              <Icon
+                as={MdOutlineAccessTime}
+                width="20px"
+                height="20px"
+                color="inherit"
+              />
+              <Text fontSize="sm">3:45</Text>
             </HStack>
           </HStack>
         </Card>
@@ -58,33 +70,34 @@ const Transcript = () => {
           <VStack spacing={8} alignItems="start" mt={4}>
             {/* Speaker row items */}
             <VStack alignItems="start">
-            <HStack alignItems="center">
-              <Avatar size="sm" src="speakerPhoto.jpg" />
-              <Text fontWeight="bold">Speaker 1</Text>
-              <Spacer />
-              <Text fontSize="sm" color="gray.500">
-                00:00
+              <HStack alignItems="center">
+                <Avatar size="sm" src="speakerPhoto.jpg" />
+                <Text fontWeight="bold">Speaker 1</Text>
+                <Spacer />
+                <Text fontSize="sm" color="gray.500">
+                  00:00
+                </Text>
+              </HStack>
+              <Text>
+                Okay, we are starting the meeting now. Lets get started with it.
               </Text>
-            </HStack>
-            <Text>
-              Okay, we are starting the meeting now. Lets get started with it.
-            </Text>
             </VStack>
 
             {/* Repeat the above structure for each speaker */}
             {/* Speaker 2 */}
             <VStack alignItems="start">
-            <HStack alignItems="center">
-              <Avatar size="sm" src="speakerPhoto.jpg" />
-              <Text fontWeight="bold">Speaker 2</Text>
-              <Spacer />
-              <Text fontSize="sm" color="gray.500">
-                00:00
+              <HStack alignItems="center">
+                <Avatar size="sm" src="speakerPhoto.jpg" />
+                <Text fontWeight="bold">Speaker 2</Text>
+                <Spacer />
+                <Text fontSize="sm" color="gray.500">
+                  00:00
+                </Text>
+              </HStack>
+              <Text>
+                Yeah, so last week we were discussing on the weekly progress of
+                the tasks. We want to track all of those now.
               </Text>
-            </HStack>
-            <Text>
-                Yeah, so last week we were discussing on the weekly progress of the tasks. We want to track all of those now.
-            </Text>
             </VStack>
             {/* Speaker 3 */}
             {/* ... */}
@@ -104,10 +117,7 @@ const Transcript = () => {
         zIndex="1"
       >
         <HStack spacing={4} align="center">
-          <IconButton
-            aria-label="Rewind"
-            icon={<Icon as={FaBackward} />}
-          />
+          <IconButton aria-label="Rewind" icon={<Icon as={FaBackward} />} />
           <IconButton
             aria-label="Play"
             icon={<Icon as={FaPlay} />}
@@ -118,10 +128,7 @@ const Transcript = () => {
             icon={<Icon as={FaPause} />}
             colorScheme="teal"
           />
-          <IconButton
-            aria-label="Forward"
-            icon={<Icon as={FaForward} />}
-          />
+          <IconButton aria-label="Forward" icon={<Icon as={FaForward} />} />
         </HStack>
       </Box>
     </Box>

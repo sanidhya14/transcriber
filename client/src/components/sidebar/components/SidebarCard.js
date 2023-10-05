@@ -62,7 +62,8 @@ export default function SidebarDocs() {
           px='10px'
           mb='6px'
           textAlign='center'>
-          Unlimited access to all features
+          Improve your development process and start doing more with Horizon UI
+          PRO!
         </Text>
       </Flex>
       <Link href='https://horizon-ui.com/pro?ref=horizon-chakra-free'>
@@ -76,7 +77,7 @@ export default function SidebarDocs() {
           fontSize='sm'
           minW='185px'
           mx='auto'>
-          Upgrade
+          Upgrade to PRO
         </Button>
       </Link>
     </Flex>
