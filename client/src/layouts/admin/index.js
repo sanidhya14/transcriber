@@ -3,7 +3,8 @@ import {
   Box,
   useDisclosure,
 } from "@chakra-ui/react";
-import Sidebar from "components/sidebar/Sidebar.js";
+import Navbar from "components/navbar/Navbar";
+import Sidebar from "components/sidebar/Sidebar";
 import { SidebarContext } from "contexts/SidebarContext";
 import React, { useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -110,16 +111,22 @@ export default function Dashboard(props) {
   document.documentElement.dir = "ltr";
   const { onOpen } = useDisclosure();
   document.documentElement.dir = "ltr";
+
+
+  /**
+   * New code below
+   */
+
+  const [sidebarToggle, setSidebarToggle] = useState(false);
+
+  const handleSidebarToggle = () => {
+    setSidebarToggle(!sidebarToggle);
+  }
+
   return (
     <Box>
-      <Box>
-        <SidebarContext.Provider
-          value={{
-            toggleSidebar,
-            setToggleSidebar,
-          }}
-        >
-          <Sidebar routes={routes} display="none" {...rest} />
+        <Box>
+          <Sidebar isExpanded={sidebarToggle} routes={routes} display="none" {...rest} />
           <Box
             float="right"
             minHeight="100vh"
@@ -136,35 +143,27 @@ export default function Dashboard(props) {
           >
             <Portal>
               <Box>
-                {/* <Navbar
-                  onOpen={onOpen}
-                  logoText={"Horizon UI Dashboard PRO"}
-                  brandText={getActiveRoute(routes)}
-                  secondary={getActiveNavbar(routes)}
-                  message={getActiveNavbarText(routes)}
-                  fixed={fixed}
-                  {...rest}
-                /> */}
+                <Navbar
+                  handleSidebarToggle={handleSidebarToggle}
+                />
               </Box>
             </Portal>
-
-            {getRoute() ? (
-              <Box
-                mx="auto"
-                p={{ base: "20px", md: "30px" }}
-                pe="20px"
-                minH="100vh"
-                pt="50px"
-              >
-                <Switch>
-                  {getRoutes(routes)}
-                  <Redirect from="/" to="/admin/default" />
-                </Switch>
-              </Box>
-            ) : null}
-          </Box>
-        </SidebarContext.Provider>
-      </Box>
+          {getRoute() ? (
+            <Box
+              mx="auto"
+              p={{ base: "20px", md: "30px" }}
+              pe="20px"
+              minH="100vh"
+              pt="50px"
+            >
+              <Switch>
+                {getRoutes(routes)}
+                <Redirect from="/" to="/admin/default" />
+              </Switch>
+            </Box>
+          ) : null}
+        </Box>
     </Box>
+    </Box >
   );
 }
