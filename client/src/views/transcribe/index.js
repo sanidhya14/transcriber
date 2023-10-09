@@ -18,13 +18,17 @@ import {
   Switch,
 } from "@chakra-ui/react";
 
-import TimelineRow from "./components/TimelineRow";
-import Card from "./components/Card.js";
-import FileSelector from "./components/FileSelector";
-import { GoCircle } from "react-icons/go";
-import ProgressLabel from "./ProgressLabel";
+import Card from "components/card/Card";
+import FileSelector from "components/files/FileSelector";
+import ProgressLabel from "components/progress/ProgressLabel";
+import TaskTimeline from "./components/TaskTimeline";
 
 export default function Transcribe() {
+
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState([false, false, false]);
+  const [disabledSteps, setDisabledSteps] = useState([false, false, false]);
+
   const [audioLanguage, setAudioLanguage] = useState("Auto-detect");
   const [transcriptionMode, setTranscriptionMode] = useState("Fast");
   const [outputLocation, setOutputLocation] = useState("");
@@ -33,30 +37,11 @@ export default function Transcribe() {
   const [wordLevelTimestamps, setWordLevelTimestamps] = useState(true);
   const [setDefaultPreferences, setSetDefaultPreferences] = useState(false);
 
-  const devPage = 0;
-
   const textColorSecondary = "gray.400";
 
-  const timelineData = [
-    {
-      logo: GoCircle,
-      title: "Select Audio File",
-      date: "Loading audio file",
-      color: "brand.300",
-    },
-    {
-      logo: GoCircle,
-      title: "Configure Options",
-      date: "Fetching configurations",
-      color: "grey.300",
-    },
-    {
-      logo: GoCircle,
-      title: "Transcibe",
-      date: "Running model",
-      color: "orange.300",
-    },
-  ];
+  const handleCurrentStepChange = (step) => {
+    setCurrentStepIndex(step);
+  };
 
   const handleOutputFormatChange = (format) => {
     if (outputFormats.includes(format)) {
@@ -66,8 +51,8 @@ export default function Transcribe() {
     }
   };
 
-  const getPage = (devPage) => {
-    switch (devPage) {
+  const getPage = (currentStepIndex) => {
+    switch (currentStepIndex) {
       case 0:
         return (
           <Card p="1rem" height="100%" width="100%">
@@ -238,22 +223,12 @@ export default function Transcribe() {
         mb="20px"
         templateColumns="1fr 4fr"
       >
-        <Card p="1rem" height="100%" width="100%">
-          <Flex direction="column" p="1rem" mt="1rem">
-            {timelineData.map((row, index, arr) => {
-              return (
-                <TimelineRow
-                  logo={row.logo}
-                  title={row.title}
-                  date={row.date}
-                  color={row.color}
-                  index={index}
-                  arrLength={arr.length}
-                />
-              );
-            })}
-          </Flex>
-        </Card>
+        <TaskTimeline
+          currentStepIndex={currentStepIndex}
+          completedSteps={completedSteps}
+          disabledSteps={disabledSteps}
+          handleCurrentStepChange={(step) => handleCurrentStepChange(step)}
+        />
         <Card p="1rem" height="100%" width="100%">
           {/* header small step counter */}
           <Text
@@ -263,11 +238,11 @@ export default function Transcribe() {
             ml="1rem"
             textAlign="start"
           >
-            Step {devPage + 1}
+            Step {currentStepIndex + 1}
           </Text>
 
           {/* Main Box */}
-          {getPage(devPage)}
+          {getPage(currentStepIndex)}
           {/* Small Layout */}
           <Flex direction="row" justify="space-between" mt={4}>
             <Button colorScheme="blue" ml={2} mr={2}>

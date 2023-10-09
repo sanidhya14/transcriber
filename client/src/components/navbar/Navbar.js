@@ -90,18 +90,17 @@ function Navbar(props) {
                     <IconButton
                         aria-label="Search database"
                         borderRadius="10px"
+                        onClick={() => handleThemeButtonClick()}
                         icon={isDarkModeEnabled() === true ?
                             <SunIcon
                                 w='30px'
                                 h='30px'
                                 color={iconDefaultColor}
-                                onClick={() => handleThemeButtonClick()}
                             /> :
                             <MoonIcon
                                 w='30px'
                                 h='30px'
                                 color={iconDefaultColor}
-                                onClick={() => handleThemeButtonClick()}
                             />
                         }
                     />

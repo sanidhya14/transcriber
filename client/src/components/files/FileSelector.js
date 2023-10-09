@@ -6,11 +6,11 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import Card from "./Card.js";
+import Card from "components/card/Card";
 import React from "react";
 
 import { MdAudioFile } from "react-icons/md";
-import Dropzone from "./Dropzone";
+import Dropzone from "components/files/Dropzone";
 
 export default function FileSelector(props) {
   const { used, total, ...rest } = props;
