@@ -2,10 +2,11 @@ import {
   Portal,
   Box,
   useDisclosure,
+  HStack,
+  Flex,
 } from "@chakra-ui/react";
 import Navbar from "components/navbar/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
-import { SidebarContext } from "contexts/SidebarContext";
 import React, { useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import routes from "routes.js";
@@ -125,36 +126,39 @@ export default function Dashboard(props) {
 
   return (
     <Box>
-        <Box>
-          <Sidebar isExpanded={sidebarToggle} routes={routes} display="none" {...rest} />
-          <Box
-            float="right"
-            minHeight="100vh"
-            height="100%"
-            overflow="auto"
-            position="relative"
-            maxHeight="100%"
-            w={{ base: "100%", xl: "calc( 100% - 290px )" }}
-            maxWidth={{ base: "100%", xl: "calc( 100% - 290px )" }}
-            transition="all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)"
-            transitionDuration=".2s, .2s, .35s"
-            transitionProperty="top, bottom, width"
-            transitionTimingFunction="linear, linear, ease"
-          >
-            <Portal>
-              <Box>
-                <Navbar
-                  handleSidebarToggle={handleSidebarToggle}
-                />
-              </Box>
-            </Portal>
+      <Portal>
+        <Box as="nav" pos="fixed" top="0" left="0" w="100%">
+          <Navbar
+            handleSidebarToggle={handleSidebarToggle}
+          />
+        </Box>
+      </Portal>
+      <Flex>
+        <Sidebar isExpanded={sidebarToggle} routes={routes} display="none" {...rest} />
+        <Box
+          float="right"
+          minHeight="100vh"
+          height="100%"
+          overflow="auto"
+          position="relative"
+          maxHeight="100%"
+          w="100%"
+          //w={{ base: "100%", xl: "calc( 100% - 290px )" }}
+          //maxWidth={{ base: "100%", xl: "calc( 100% - 290px )" }}
+          transition="all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)"
+          transitionDuration=".2s, .2s, .35s"
+          transitionProperty="top, bottom, width"
+          transitionTimingFunction="linear, linear, ease"
+          // debug borders using below
+          // style={{ border: "1px solid blue" }}
+        >
           {getRoute() ? (
             <Box
               mx="auto"
               p={{ base: "20px", md: "30px" }}
               pe="20px"
               minH="100vh"
-              pt="50px"
+              pt="0px"
             >
               <Switch>
                 {getRoutes(routes)}
@@ -163,7 +167,7 @@ export default function Dashboard(props) {
             </Box>
           ) : null}
         </Box>
-    </Box>
+      </Flex>
     </Box >
   );
 }

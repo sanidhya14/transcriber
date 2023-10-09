@@ -33,7 +33,7 @@ export default function Transcribe() {
   const [wordLevelTimestamps, setWordLevelTimestamps] = useState(true);
   const [setDefaultPreferences, setSetDefaultPreferences] = useState(false);
 
-  const devPage = 2;
+  const devPage = 0;
 
   const textColorSecondary = "gray.400";
 

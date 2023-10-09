@@ -28,7 +28,7 @@ function Sidebar(props) {
   }
 
   return (
-    <Flex display={{ sm: "none", xl: "block" }} position='fixed' minH='100vh' mt="8vh">
+    <Flex display={{ sm: "none", xl: "block" }} position='relative' minH='100vh' mt="8vh">
       <Flex
         bg={sidebarBg}
         transition={variantChange}
