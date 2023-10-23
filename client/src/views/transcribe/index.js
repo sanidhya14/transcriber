@@ -1,41 +1,32 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  Center,
-  Flex,
-  Text,
-  Button,
-  Heading,
-  Select,
-  Radio,
-  RadioGroup,
-  Stack,
-  Checkbox,
-  FormControl,
-  FormLabel,
-  Input,
-  Switch,
-} from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import { Box, Grid, Center, Flex, Text, Button } from "@chakra-ui/react";
 
 import Card from "components/card/Card";
-import FileSelector from "components/files/FileSelector";
+import FileSelector from "./components/FileSelector";
 import ProgressLabel from "components/progress/ProgressLabel";
 import TaskTimeline from "./components/TaskTimeline";
+import { TRANSCRIPTION_JOB_STATUS } from "constants/JobConstants";
+import RunOptions from "./components/RunOptions";
 
 export default function Transcribe() {
-
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [completedSteps, setCompletedSteps] = useState([false, false, false]);
   const [disabledSteps, setDisabledSteps] = useState([false, false, false]);
+
+  const [transcriptionStatus, setTranscriptionStatus] = useState(
+    TRANSCRIPTION_JOB_STATUS.INACTIVE
+  );
+
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const [audioLanguage, setAudioLanguage] = useState("Auto-detect");
   const [transcriptionMode, setTranscriptionMode] = useState("Fast");
   const [outputLocation, setOutputLocation] = useState("");
   const [outputFormats, setOutputFormats] = useState([]);
-  const [speakerIdentification, setSpeakerIdentification] = useState(true);
-  const [wordLevelTimestamps, setWordLevelTimestamps] = useState(true);
-  const [setDefaultPreferences, setSetDefaultPreferences] = useState(false);
+  const [enableSpeakerIdentification, setEnableSpeakerIdentification] =
+    useState(true);
+  const [enableWordLevelTimestamps, setEnableWordLevelTimestamps] =
+    useState(true);
 
   const textColorSecondary = "gray.400";
 
@@ -43,7 +34,36 @@ export default function Transcribe() {
     setCurrentStepIndex(step);
   };
 
-  const handleOutputFormatChange = (format) => {
+  const handleNextButtonClick = () => {
+    switch (currentStepIndex) {
+      case 0:
+        handleCurrentStepChange(currentStepIndex + 1);
+        break;
+
+      case 1:
+        handleCurrentStepChange(currentStepIndex + 1);
+        setTranscriptionStatus(TRANSCRIPTION_JOB_STATUS.REQUESTED);
+        break;
+
+      default:
+        return null;
+    }
+  };
+
+  // STEPS
+
+  const handleFileSelection = (newSelectedFiles) => {
+    setSelectedFiles([...newSelectedFiles, ...selectedFiles]);
+  };
+
+  const handleFileRemoveButtonClick = (fileIdentifier) => {
+    const updatedFilesList = selectedFiles.filter(
+      (file) => file.name !== fileIdentifier
+    );
+    setSelectedFiles(updatedFilesList);
+  };
+
+  const handleOutputFormatsChange = (format) => {
     if (outputFormats.includes(format)) {
       setOutputFormats(outputFormats.filter((item) => item !== format));
     } else {
@@ -51,115 +71,98 @@ export default function Transcribe() {
     }
   };
 
+  const handleAudioLanguageChange = (language) => {
+    setAudioLanguage(language);
+  };
+
+  const handleTranscriptionModeChange = (mode) => {
+    setTranscriptionMode(mode);
+  };
+
+  const handleOutputLocationChange = (location) => {
+    setOutputLocation(location);
+  };
+
+  const toggleSpeakerIdentification = (flag) => {
+    setEnableSpeakerIdentification(flag);
+  };
+
+  const toggleWordLevelTimestamps = (flag) => {
+    setEnableWordLevelTimestamps(flag);
+  };
+
+  // USE EFFECTS
+
+  const runJobPreChecks = () => {
+    console.log("Running pre-checks ");
+  };
+
+  const startTranscription = () => {
+    console.log("Initiating transcription");
+  };
+
+  useEffect(() => {
+    /**
+     * 1. Lock relevant UI controls.
+     * 2. Run any pre-checks (such as config fetching, validations etc.)
+     * 3. Initiate the job.
+     */
+    if (transcriptionStatus === TRANSCRIPTION_JOB_STATUS.REQUESTED) {
+      runJobPreChecks();
+      startTranscription();
+    }
+  }, [transcriptionStatus]);
+
   const getPage = (currentStepIndex) => {
     switch (currentStepIndex) {
       case 0:
         return (
           <Card p="1rem" height="100%" width="100%">
-            <FileSelector height="100%" width="100%"></FileSelector>
+            <FileSelector
+              height="100%"
+              width="100%"
+              selectedFiles={selectedFiles}
+              handleFileSelection={(newSelectedFiles) =>
+                handleFileSelection(newSelectedFiles)
+              }
+              handleFileRemoveButtonClick={(fileIdentifier) =>
+                handleFileRemoveButtonClick(fileIdentifier)
+              }
+            ></FileSelector>
           </Card>
         );
 
       case 1:
         return (
           <Card p="1rem" height="80vh" width="100%" overflowY="auto">
-            <Heading as="h2" size="md" mb={4}>
-              Primary Options
-            </Heading>
-            <FormControl mb={4}>
-              <FormLabel>Audio Language</FormLabel>
-              <Select
-                value={audioLanguage}
-                onChange={(e) => setAudioLanguage(e.target.value)}
-              >
-                <option value="Auto-detect">Auto-detect</option>
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
-                <option value="French">French</option>
-                {/* Add other language options */}
-              </Select>
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel>Transcription Mode</FormLabel>
-              <RadioGroup
-                value={transcriptionMode}
-                onChange={setTranscriptionMode}
-              >
-                <Stack spacing={2}>
-                  <Radio value="Fast">Fast</Radio>
-                  <Radio value="Balanced">Balanced</Radio>
-                  <Radio value="High Accuracy">High Accuracy</Radio>
-                </Stack>
-              </RadioGroup>
-            </FormControl>
-
-            <Heading as="h2" size="md" mt={8} mb={4}>
-              Export Options
-            </Heading>
-            <FormControl mb={4}>
-              <FormLabel>Output Location</FormLabel>
-              <Input
-                value={outputLocation}
-                onChange={(e) => setOutputLocation(e.target.value)}
-              />
-            </FormControl>
-            <FormControl mb={4}>
-              <FormLabel>Output formats</FormLabel>
-              <Stack spacing={2}>
-                <Checkbox
-                  isChecked={outputFormats.includes("txt")}
-                  onChange={() => handleOutputFormatChange("txt")}
-                >
-                  txt
-                </Checkbox>
-                <Checkbox
-                  isChecked={outputFormats.includes("srt")}
-                  onChange={() => handleOutputFormatChange("srt")}
-                >
-                  srt
-                </Checkbox>
-                <Checkbox
-                  isChecked={outputFormats.includes("vtt")}
-                  onChange={() => handleOutputFormatChange("vtt")}
-                >
-                  vtt
-                </Checkbox>
-                <Checkbox
-                  isChecked={outputFormats.includes("json")}
-                  onChange={() => handleOutputFormatChange("json")}
-                >
-                  json
-                </Checkbox>
-              </Stack>
-            </FormControl>
-
-            <Heading as="h2" size="md" mt={8} mb={4}>
-              Advanced Options
-            </Heading>
-            <Button mb={4}>Auto-Detect</Button>
-            <FormControl display="flex" justifyContent="space-between" mb={4}>
-              <FormLabel>Speaker Identification</FormLabel>
-              <Switch
-                isChecked={speakerIdentification}
-                onChange={() =>
-                  setSpeakerIdentification(!speakerIdentification)
-                }
-              />
-            </FormControl>
-            <FormControl display="flex" justifyContent="space-between" mb={4}>
-              <FormLabel>Word Level Timestamps</FormLabel>
-              <Switch
-                isChecked={wordLevelTimestamps}
-                onChange={() => setWordLevelTimestamps(!wordLevelTimestamps)}
-              />
-            </FormControl>
-
-            <Checkbox
-              isChecked={setDefaultPreferences}
-              onChange={() => setSetDefaultPreferences(!setDefaultPreferences)}
-            >
-              Set as default preferences
-            </Checkbox>
+            <RunOptions
+              height="100%"
+              width="100%"
+              audioLanguage={audioLanguage}
+              handleAudioLanguageChange={(language) =>
+                handleAudioLanguageChange(language)
+              }
+              transcriptionMode={transcriptionMode}
+              handleTranscriptionModeChange={(mode) =>
+                handleTranscriptionModeChange(mode)
+              }
+              outputLocation={outputLocation}
+              handleOutputLocationChange={(location) =>
+                handleOutputLocationChange(location)
+              }
+              outputFormats={outputFormats}
+              handleOutputFormatsChange={(formats) =>
+                handleOutputFormatsChange(formats)
+              }
+              enableSpeakerIdentification={enableSpeakerIdentification}
+              toggleSpeakerIdentification={(flag) =>
+                toggleSpeakerIdentification(flag)
+              }
+              enableWordLevelTimestamps={enableWordLevelTimestamps}
+              toggleWordLevelTimestamps={(flag) =>
+                toggleWordLevelTimestamps(flag)
+              }
+            />
           </Card>
         );
 
@@ -245,7 +248,12 @@ export default function Transcribe() {
           {getPage(currentStepIndex)}
           {/* Small Layout */}
           <Flex direction="row" justify="space-between" mt={4}>
-            <Button colorScheme="blue" ml={2} mr={2}>
+            <Button
+              colorScheme="blue"
+              ml={2}
+              mr={2}
+              onClick={() => handleNextButtonClick()}
+            >
               Next
             </Button>
           </Flex>

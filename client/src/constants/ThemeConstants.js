@@ -6,4 +6,5 @@ export const HIGHLIGHT_COLOR_LIGHT = "pink";
 export const HIGHLIGHT_COLOR_DARK = "pink";
 export const ICON_COLOR_LIGHT = "gray.400";
 export const ICON_COLOR_DARK = "white";
-
+export const BRAND_COLOR_LIGHT = "brand.500";
+export const BRAND_COLOR_DARK = "white";

@@ -81,6 +81,7 @@ function TaskTimeline(props) {
                 {timelineSteps.map((row, index, arr) => {
                     return (
                         <TimelineRow
+                            key={index}
                             logo={getStepIcon(index)}
                             title={row.title}
                             date={row.description}
