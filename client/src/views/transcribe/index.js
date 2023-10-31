@@ -1,37 +1,96 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Center, Flex, Text, Button } from "@chakra-ui/react";
-
+import { Box, Grid, Flex, Text, Button } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import FileSelector from "./components/FileSelector";
-import ProgressLabel from "components/progress/ProgressLabel";
 import TaskTimeline from "./components/TaskTimeline";
 import { TRANSCRIPTION_JOB_STATUS } from "constants/JobConstants";
 import RunOptions from "./components/RunOptions";
+import TranscribeStatus from "./components/TranscribeStatus";
+import { INPUT_LANGUAGE } from "constants/JobConstants";
+import { ICON_COLOR_LIGHT } from "constants/ThemeConstants";
+
+const INITIAL_STATE = {
+  currentStepIndex: 0,
+  completedSteps: [false, false, false],
+  disabledSteps: [false, false, true],
+  transcriptionStatus: TRANSCRIPTION_JOB_STATUS.INACTIVE,
+  selectedFiles: [],
+  audioLanguage: INPUT_LANGUAGE.AUTO_DETECT,
+  // Mode will be kept always null at initialization
+  // to force user to select required value.
+  transcriptionMode: null,
+  outputLocation: "./transcription-outputs",
+  outputFormats: [],
+  enableSpeakerIdentification: true,
+  enableWordLevelTimestamps: true,
+  statusDescription: "Initializing",
+  statusPercentage: 0,
+  estimatedTimeRemaining: null,
+  isCancelJobModalVisible: false,
+};
+
+function initializeState(initialState) {
+  return Object.keys(initialState).reduce((state, key) => {
+    const [value, setValue] = useState(initialState[key]);
+    state[key] = value;
+    state[`set${key.charAt(0).toUpperCase() + key.slice(1)}`] = setValue;
+    return state;
+  }, {});
+}
 
 export default function Transcribe() {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState([false, false, false]);
-  const [disabledSteps, setDisabledSteps] = useState([false, false, false]);
-
-  const [transcriptionStatus, setTranscriptionStatus] = useState(
-    TRANSCRIPTION_JOB_STATUS.INACTIVE
-  );
-
-  const [selectedFiles, setSelectedFiles] = useState([]);
-
-  const [audioLanguage, setAudioLanguage] = useState("Auto-detect");
-  const [transcriptionMode, setTranscriptionMode] = useState("Fast");
-  const [outputLocation, setOutputLocation] = useState("");
-  const [outputFormats, setOutputFormats] = useState([]);
-  const [enableSpeakerIdentification, setEnableSpeakerIdentification] =
-    useState(true);
-  const [enableWordLevelTimestamps, setEnableWordLevelTimestamps] =
-    useState(true);
-
-  const textColorSecondary = "gray.400";
+  const state = initializeState(INITIAL_STATE);
+  const totalSteps = 3;
+  const {
+    currentStepIndex,
+    setCurrentStepIndex,
+    completedSteps,
+    setCompletedSteps,
+    disabledSteps,
+    setDisabledSteps,
+    transcriptionStatus,
+    setTranscriptionStatus,
+    selectedFiles,
+    setSelectedFiles,
+    audioLanguage,
+    setAudioLanguage,
+    transcriptionMode,
+    setTranscriptionMode,
+    outputLocation,
+    setOutputLocation,
+    outputFormats,
+    setOutputFormats,
+    enableSpeakerIdentification,
+    setEnableSpeakerIdentification,
+    enableWordLevelTimestamps,
+    setEnableWordLevelTimestamps,
+    statusDescription,
+    setStatusDescription,
+    statusPercentage,
+    setStatusPercentage,
+    estimatedTimeRemaining,
+    setEstimatedTimeRemaining,
+    isCancelJobModalVisible,
+    setIsCancelJobModalVisible,
+  } = state;
 
   const handleCurrentStepChange = (step) => {
     setCurrentStepIndex(step);
+  };
+
+  const isNextButtonDisabled = () => {
+    if (!completedSteps[currentStepIndex]) {
+      return true;
+    } else {
+      if (
+        currentStepIndex === totalSteps - 2 &&
+        (!completedSteps[currentStepIndex] ||
+          !completedSteps[currentStepIndex - 1])
+      ) {
+        return true;
+      }
+    }
+    return false;
   };
 
   const handleNextButtonClick = () => {
@@ -50,7 +109,9 @@ export default function Transcribe() {
     }
   };
 
-  // STEPS
+  const returnFilePath = async () => {
+    await window.myDialog.showDialog();
+  };
 
   const handleFileSelection = (newSelectedFiles) => {
     setSelectedFiles([...newSelectedFiles, ...selectedFiles]);
@@ -79,8 +140,9 @@ export default function Transcribe() {
     setTranscriptionMode(mode);
   };
 
-  const handleOutputLocationChange = (location) => {
-    setOutputLocation(location);
+  const handleOutputLocationChange = () => {
+    returnFilePath();
+    // setOutputLocation(returnFilePath());
   };
 
   const toggleSpeakerIdentification = (flag) => {
@@ -91,7 +153,16 @@ export default function Transcribe() {
     setEnableWordLevelTimestamps(flag);
   };
 
-  // USE EFFECTS
+  const toggleCancelJobModalVisibility = (flag) => {
+    setIsCancelJobModalVisible(flag);
+  };
+
+  const cancelTranscriptionJob = () => {
+    setIsCancelJobModalVisible(false);
+    console.log("Cancelling Trancsription job");
+    // Once complete then reset, show loading state till then.
+    setTranscriptionStatus(TRANSCRIPTION_JOB_STATUS.INACTIVE);
+  };
 
   const runJobPreChecks = () => {
     console.log("Running pre-checks ");
@@ -102,14 +173,39 @@ export default function Transcribe() {
   };
 
   useEffect(() => {
-    /**
-     * 1. Lock relevant UI controls.
-     * 2. Run any pre-checks (such as config fetching, validations etc.)
-     * 3. Initiate the job.
-     */
-    if (transcriptionStatus === TRANSCRIPTION_JOB_STATUS.REQUESTED) {
+    if (selectedFiles.length > 0) {
+      setCompletedSteps([true, completedSteps[1], completedSteps[2]]);
+    } else {
+      setCompletedSteps([false, completedSteps[1], completedSteps[2]]);
+    }
+  }, [selectedFiles]);
+
+  useEffect(() => {
+    if (audioLanguage === undefined || transcriptionMode === undefined) {
+      setCompletedSteps([completedSteps[0], true, completedSteps[2]]);
+    } else {
+      setCompletedSteps([completedSteps[0], false, completedSteps[2]]);
+    }
+  }, [audioLanguage, transcriptionMode]);
+
+  useEffect(() => {
+    if (transcriptionStatus === TRANSCRIPTION_JOB_STATUS.INACTIVE) {
+      // Reset to INITIAL_STATE
+      const initialStateKeys = Object.keys(INITIAL_STATE);
+      initialStateKeys.forEach((key) => {
+        if (state[key] !== INITIAL_STATE[key]) {
+          state[`set${key.charAt(0).toUpperCase() + key.slice(1)}`](
+            INITIAL_STATE[key]
+          );
+        }
+      });
+    } else if (transcriptionStatus === TRANSCRIPTION_JOB_STATUS.REQUESTED) {
+      setDisabledSteps([true, true, false]);
       runJobPreChecks();
       startTranscription();
+    } else if (transcriptionStatus === TRANSCRIPTION_JOB_STATUS.STARTED) {
+    } else if (transcriptionStatus === TRANSCRIPTION_JOB_STATUS.COMPLETED) {
+    } else if (transcriptionStatus === TRANSCRIPTION_JOB_STATUS.FAILED) {
     }
   }, [transcriptionStatus]);
 
@@ -147,9 +243,7 @@ export default function Transcribe() {
                 handleTranscriptionModeChange(mode)
               }
               outputLocation={outputLocation}
-              handleOutputLocationChange={(location) =>
-                handleOutputLocationChange(location)
-              }
+              handleOutputLocationChange={() => handleOutputLocationChange()}
               outputFormats={outputFormats}
               handleOutputFormatsChange={(formats) =>
                 handleOutputFormatsChange(formats)
@@ -169,46 +263,16 @@ export default function Transcribe() {
       case 2:
         return (
           <Card p="1rem" height="80vh" width="100%" align="center">
-            <Card p="1rem" height="100%" width="100%" align="center">
-              <Center>
-                <ProgressLabel
-                  startDegree={270}
-                  progress={80 / 2}
-                  //fillColor="rgb(248,247,243)"
-                  trackColor="#fff"
-                  progressColor="#ac884c"
-                  progressWidth={10}
-                  trackWidth={16}
-                  // trackBorderWidth={1}
-                  // trackBorderColor="rgb(232,223,209)"
-                  cornersWidth={5}
-                  size={240}
-                  text="70%"
-                  textProps={{
-                    x: "50%",
-                    y: "50%",
-                    dx: 8,
-                    dy: 8,
-                    textAnchor: "middle",
-                    style: {
-                      fontSize: 28,
-                      fontWeight: "500",
-                      fill: "#ac884c",
-                    },
-                  }}
-                />
-              </Center>
-              <Text color="gray.400" fontWeight="500" fontSize="md">
-                Transcribing Audio to text
-              </Text>
-              <Center>
-                <Flex direction="row" justify="space-between" mt={4}>
-                  <Button colorScheme="blue" ml={2} mr={2}>
-                    See Transcript
-                  </Button>
-                </Flex>
-              </Center>
-            </Card>
+            <TranscribeStatus
+              statusDescription={statusDescription}
+              statusPercentage={statusPercentage}
+              estimatedTimeRemaining={estimatedTimeRemaining}
+              toggleCancelJobModalVisibility={(flag) =>
+                toggleCancelJobModalVisibility(flag)
+              }
+              isCancelJobModalVisible={isCancelJobModalVisible}
+              cancelTranscriptionJob={() => cancelTranscriptionJob()}
+            />
           </Card>
         );
 
@@ -233,9 +297,8 @@ export default function Transcribe() {
           handleCurrentStepChange={(step) => handleCurrentStepChange(step)}
         />
         <Card p="1rem" height="100%" width="100%">
-          {/* header small step counter */}
           <Text
-            color={textColorSecondary}
+            color={ICON_COLOR_LIGHT}
             fontSize="md"
             my={{ base: "auto", "2xl": "10px" }}
             ml="1rem"
@@ -244,19 +307,21 @@ export default function Transcribe() {
             Step {currentStepIndex + 1}
           </Text>
 
-          {/* Main Box */}
           {getPage(currentStepIndex)}
-          {/* Small Layout */}
-          <Flex direction="row" justify="space-between" mt={4}>
-            <Button
-              colorScheme="blue"
-              ml={2}
-              mr={2}
-              onClick={() => handleNextButtonClick()}
-            >
-              Next
-            </Button>
-          </Flex>
+
+          {currentStepIndex < totalSteps - 1 && (
+            <Flex direction="row" mt={4}>
+              <Button
+                colorScheme="blue"
+                ml={2}
+                mr={2}
+                onClick={() => handleNextButtonClick()}
+                disabled={isNextButtonDisabled()}
+              >
+                Next
+              </Button>
+            </Flex>
+          )}
         </Card>
       </Grid>
     </Box>

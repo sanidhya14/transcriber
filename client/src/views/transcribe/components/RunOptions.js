@@ -52,7 +52,11 @@ export default function RunOptions(props) {
             onChange={(e) => handleAudioLanguageChange(e.target.value)}
           >
             {Object.entries(INPUT_LANGUAGE).map(([key, value]) => {
-              return <option value={key}>{value}</option>;
+              return (
+                <option key={key} value={key}>
+                  {value}
+                </option>
+              );
             })}
           </Select>
         </Flex>
@@ -65,7 +69,11 @@ export default function RunOptions(props) {
         >
           <Stack spacing={2}>
             {Object.entries(TRANSCRIPTION_MODES).map(([key, value]) => {
-              return <Radio value={key}>{value}</Radio>;
+              return (
+                <Radio key={key} value={key}>
+                  {value}
+                </Radio>
+              );
             })}
           </Stack>
         </RadioGroup>
@@ -96,6 +104,7 @@ export default function RunOptions(props) {
           {Object.entries(EXPORT_FORMATS).map(([key, value]) => {
             return (
               <Checkbox
+                key={key}
                 isChecked={outputFormats.includes(key)}
                 onChange={() => handleOutputFormatsChange(key)}
               >
