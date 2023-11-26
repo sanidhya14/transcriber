@@ -109,10 +109,6 @@ export default function Transcribe() {
     }
   };
 
-  const returnFilePath = async () => {
-    await window.myDialog.showDialog();
-  };
-
   const handleFileSelection = (newSelectedFiles) => {
     setSelectedFiles([...newSelectedFiles, ...selectedFiles]);
   };
@@ -140,9 +136,8 @@ export default function Transcribe() {
     setTranscriptionMode(mode);
   };
 
-  const handleOutputLocationChange = () => {
-    returnFilePath();
-    // setOutputLocation(returnFilePath());
+  const handleOutputLocationChange = (location) => {
+    setOutputLocation(location);
   };
 
   const toggleSpeakerIdentification = (flag) => {
@@ -159,7 +154,6 @@ export default function Transcribe() {
 
   const cancelTranscriptionJob = () => {
     setIsCancelJobModalVisible(false);
-    console.log("Cancelling Trancsription job");
     // Once complete then reset, show loading state till then.
     setTranscriptionStatus(TRANSCRIPTION_JOB_STATUS.INACTIVE);
   };
@@ -169,7 +163,20 @@ export default function Transcribe() {
   };
 
   const startTranscription = () => {
-    console.log("Initiating transcription");
+    console.log(
+      "Initiating transcription with payload: " +
+      JSON.stringify({
+          files: selectedFiles,
+          options: [
+            audioLanguage,
+            transcriptionMode,
+            outputLocation,
+            outputFormats,
+            enableSpeakerIdentification,
+            enableWordLevelTimestamps,
+          ],
+        })
+    );
   };
 
   useEffect(() => {
@@ -243,7 +250,9 @@ export default function Transcribe() {
                 handleTranscriptionModeChange(mode)
               }
               outputLocation={outputLocation}
-              handleOutputLocationChange={() => handleOutputLocationChange()}
+              handleOutputLocationChange={(location) =>
+                handleOutputLocationChange(location)
+              }
               outputFormats={outputFormats}
               handleOutputFormatsChange={(formats) =>
                 handleOutputFormatsChange(formats)

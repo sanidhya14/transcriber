@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Box,
-  Button,
   Flex,
   Heading,
   Select,
@@ -87,14 +86,20 @@ export default function RunOptions(props) {
           <FormLabel>Output Location</FormLabel>
           <Spacer />
           <Flex>
-            <Button
+            {/* <Button
               w="200px"
               mr="20px"
               onClick={() => handleOutputLocationChange()}
             >
               Select Location
-            </Button>
-            <Input isDisabled={true} value={outputLocation} />
+            </Button> */}
+            <Input
+              isDisabled={false}
+              value={outputLocation}
+              onChange={(event) =>
+                handleOutputLocationChange(event.target.value)
+              }
+            />
           </Flex>
         </Flex>
       </FormControl>

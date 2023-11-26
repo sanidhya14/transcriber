@@ -1,18 +1,7 @@
-import {
-  Flex,
-  Text,
-  Button,
-  Heading,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
+import { Flex, Text, Button, Heading } from "@chakra-ui/react";
 import ProgressLabel from "components/progress/ProgressLabel";
-import { useRef } from "react";
+import ActionConfirmation from "components/modals/ActionConfirmation";
+import { ACTION_CONFIRMATION_TYPE } from "constants/ModalConstants";
 
 export default function TranscribeStatus(props) {
   const {
@@ -25,8 +14,6 @@ export default function TranscribeStatus(props) {
   } = {
     ...props,
   };
-
-  const cancelModalButtonRef = useRef();
 
   return (
     <Flex direction="column" width="100%">
@@ -82,37 +69,14 @@ export default function TranscribeStatus(props) {
             Cancel
           </Button>
         )}
-        <Modal
-          isCentered={true}
-          initialFocusRef={cancelModalButtonRef}
-          isOpen={isCancelJobModalVisible}
-          onClose={() => toggleCancelJobModalVisibility(false)}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              Are you sure you want to cancel the transcription ?
-            </ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>You will loose any current job progress.</ModalBody>
-            <ModalFooter>
-              <Button
-               ref={cancelModalButtonRef}
-                variant="ghost"
-                onClick={() => toggleCancelJobModalVisibility(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                colorScheme="red"
-                mr={3}
-                onClick={() => cancelTranscriptionJob()}
-              >
-                Confirm
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <ActionConfirmation
+          confirmationType={ACTION_CONFIRMATION_TYPE.WARN}
+          confirmnationHeading="Cancel Transcription"
+          confirmnationMessage="Are you sure ? You will loose any current job progress"
+          isVisible={isCancelJobModalVisible}
+          toggleVisibility={(flag) => toggleCancelJobModalVisibility(flag)}
+          handleConfirmation={() => cancelTranscriptionJob()}
+        />
       </Flex>
     </Flex>
   );

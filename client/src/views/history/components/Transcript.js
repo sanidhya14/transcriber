@@ -13,7 +13,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { FaPlay, FaPause, FaForward, FaBackward } from "react-icons/fa";
-import Card from "./Card.js";
+import Card from "components/card/Card.js";
 import Menu from "./MainMenu.js";
 
 import {

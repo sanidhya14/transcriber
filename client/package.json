@@ -43,7 +43,8 @@
     "react-circle-progress-bar": "0.1.4",
     "prettier": "3.0.3",
     "path-browserify": "1.0.1",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "moment": "2.29.4"
   },
   "scripts": {
     "start": "electron main.js",
