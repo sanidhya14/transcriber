@@ -14,26 +14,33 @@ import {
   Checkbox,
 } from "@chakra-ui/react";
 import { EXPORT_FORMATS } from "constants/JobConstants";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function ExportModal(props) {
-    
-  const {
-    isVisible,
-    toggleVisibility,
-    handleConfirmation,
-    exportFormats,
-    handleExportFormatsChange,
-  } = props;
-
+  const { isExportModalVisible, toggleExportModalVisibility } = { ...props };
+  const [exportFormats, setExportFormats] = useState([]);
   const cancelModalButtonRef = useRef();
+
+  const handleExportFormatsChange = (format) => {
+    if (exportFormats.includes(format)) {
+      setExportFormats(exportFormats.filter((item) => item !== format));
+    } else {
+      setExportFormats([...exportFormats, format]);
+    }
+  };
+
+  const handleExportAction = () => {
+    console.log("Exporting transcripts: ", exportFormats);
+    // WRAP EVERY API CALL With proper waiting states on UI
+    toggleExportModalVisibility(false);
+  };
 
   return (
     <Modal
       isCentered={true}
       initialFocusRef={cancelModalButtonRef}
-      isOpen={isVisible}
-      onClose={() => toggleVisibility(false)}
+      isOpen={isExportModalVisible}
+      onClose={() => toggleExportModalVisibility(false)}
     >
       <ModalOverlay />
       <ModalContent>
@@ -67,11 +74,11 @@ export default function ExportModal(props) {
           <Button
             ref={cancelModalButtonRef}
             variant="ghost"
-            onClick={() => toggleVisibility(false)}
+            onClick={() => toggleExportModalVisibility(false)}
           >
             Cancel
           </Button>
-          <Button colorScheme="red" mr={3} onClick={() => handleConfirmation()}>
+          <Button colorScheme="red" mr={3} onClick={() => handleExportAction()}>
             Confirm
           </Button>
         </ModalFooter>

@@ -12,34 +12,34 @@ import {
 } from "@chakra-ui/react";
 import {
   MdOutlineMoreHoriz,
-  MdOutlinePerson,
-  MdOutlineCardTravel,
-  MdOutlineLightbulb,
-  MdOutlineSettings,
+  MdOutlineImportExport,
+  MdOutlineSave,
+  MdOutlineRestore,
 } from "react-icons/md";
 
 export default function Banner(props) {
-  const { ...rest } = props;
+  const { handleExport, ...rest } = props;
 
+  // Handle while perfoming Theming changes
   const textColor = useColorModeValue("secondaryGray.500", "white");
   const textHover = useColorModeValue(
     { color: "secondaryGray.900", bg: "unset" },
-    { color: "secondaryGray.500", bg: "unset" },
+    { color: "secondaryGray.500", bg: "unset" }
   );
   const iconColor = useColorModeValue("brand.500", "white");
   const bgList = useColorModeValue("white", "whiteAlpha.100");
   const bgShadow = useColorModeValue(
     "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
-    "unset",
+    "unset"
   );
   const bgButton = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
   const bgHover = useColorModeValue(
     { bg: "secondaryGray.400" },
-    { bg: "whiteAlpha.50" },
+    { bg: "whiteAlpha.50" }
   );
   const bgFocus = useColorModeValue(
     { bg: "secondaryGray.300" },
-    { bg: "whiteAlpha.100" },
+    { bg: "whiteAlpha.100" }
   );
 
   // Ellipsis modals
@@ -92,10 +92,10 @@ export default function Banner(props) {
           }}
           mb="10px"
         >
-          <Flex align="center">
-            <Icon as={MdOutlinePerson} h="16px" w="16px" me="8px" />
+          <Flex align="center" onClick={() => handleExport()}>
+            <Icon as={MdOutlineImportExport} h="16px" w="16px" me="8px" />
             <Text fontSize="sm" fontWeight="400">
-              Panel 1
+              Export
             </Text>
           </Flex>
         </MenuItem>
@@ -114,9 +114,9 @@ export default function Banner(props) {
           mb="10px"
         >
           <Flex align="center">
-            <Icon as={MdOutlineCardTravel} h="16px" w="16px" me="8px" />
+            <Icon as={MdOutlineSave} h="16px" w="16px" me="8px" />
             <Text fontSize="sm" fontWeight="400">
-              Panel 2
+              Save
             </Text>
           </Flex>
         </MenuItem>
@@ -135,29 +135,9 @@ export default function Banner(props) {
           mb="10px"
         >
           <Flex align="center">
-            <Icon as={MdOutlineLightbulb} h="16px" w="16px" me="8px" />
+            <Icon as={MdOutlineRestore} h="16px" w="16px" me="8px" />
             <Text fontSize="sm" fontWeight="400">
-              Panel 3
-            </Text>
-          </Flex>
-        </MenuItem>
-        <MenuItem
-          transition="0.2s linear"
-          color={textColor}
-          _hover={textHover}
-          p="0px"
-          borderRadius="8px"
-          _active={{
-            bg: "transparent",
-          }}
-          _focus={{
-            bg: "transparent",
-          }}
-        >
-          <Flex align="center">
-            <Icon as={MdOutlineSettings} h="16px" w="16px" me="8px" />
-            <Text fontSize="sm" fontWeight="400">
-              Panel 4
+              Reset
             </Text>
           </Flex>
         </MenuItem>

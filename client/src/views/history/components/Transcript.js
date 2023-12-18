@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Grid,
@@ -7,22 +7,146 @@ import {
   VStack,
   HStack,
   Spacer,
-  IconButton,
   Icon,
   Avatar,
   Button,
+  Input,
 } from "@chakra-ui/react";
-import { FaPlay, FaPause, FaForward, FaBackward } from "react-icons/fa";
 import Card from "components/card/Card.js";
 import Menu from "./MainMenu.js";
-
 import {
   MdCalendarMonth,
   MdEdit,
   MdOutlineAccessTime,
+  MdRemoveRedEye,
 } from "react-icons/md";
+import { TRANSCRIPTION_VIEWER_MODE } from "constants/TranscriptionHistoryConstants.js";
+import AudioPlayer from "./AudioPlayer.js";
+import track from "assets/av.mp3";
+import ExportModal from "./ExportModal";
 
-const Transcript = () => {
+const INITIAL_STATE = {
+  viewMode: TRANSCRIPTION_VIEWER_MODE.VIEWER,
+  transcriptionName: "Untitled",
+  transcriptionDuration: "00:00",
+  transcriptionLastUpdatedDate: "Fri, Aug 18, 2023 8:00 PM",
+  speakers: [
+    {
+      label: "Speaker 1",
+      logo: "logo.png",
+    },
+    {
+      label: "Speaker 2",
+      logo: "logo.png",
+    },
+  ],
+  transcriptData: {
+    "00:02": {
+      speakerIndex: 0,
+      timestamp: "00:02",
+      text: "Okay, we are starting the meeting now. Lets get started with it.",
+    },
+    "02:14": {
+      speakerIndex: 1,
+      timestamp: "01:09",
+      text: "Yeah, so last week we were discussing on the weekly progress of the tasks. We want to track all of those now.",
+    },
+    "02:11": {
+      speakerIndex: 0,
+      timestamp: "01:44",
+      text: "Yeah, so last week we were discussing on the weekly progress of the tasks. We want to track all of those now.",
+    },
+    "02:12": {
+      speakerIndex: 1,
+      timestamp: "02:14",
+      text: "Yeah, so last week we were discussing on the weekly progress of the tasks. We want to track all of those now.",
+    },
+  },
+  audio: new Audio(track),
+  currentAudioTimestamp: 0,
+  isFocused: false,
+  isExportModalVisible: false,
+};
+
+function initializeState(initialState) {
+  return Object.keys(initialState).reduce((state, key) => {
+    const [value, setValue] = useState(initialState[key]);
+    state[key] = value;
+    state[`set${key.charAt(0).toUpperCase() + key.slice(1)}`] = setValue;
+    return state;
+  }, {});
+}
+
+export default function Transcript() {
+  const state = initializeState(INITIAL_STATE);
+
+  const {
+    viewMode,
+    setViewMode,
+    transcriptionName,
+    setTranscriptionName,
+    transcriptionDuration,
+    transcriptionLastUpdatedDate,
+    speakers,
+    setSpeakers,
+    transcriptData,
+    setTranscriptData,
+    audio,
+    isExportModalVisible,
+    setIsExportModalVisible,
+  } = state;
+
+  const getIconForViewerModeButton = () => {
+    if (viewMode === TRANSCRIPTION_VIEWER_MODE.VIEWER) {
+      return MdRemoveRedEye;
+    } else {
+      return MdEdit;
+    }
+  };
+
+  const handleAudioTranscriptTimestampClick = (timestamp) => {
+    const timestampInSeconds =
+      parseInt(timestamp.split(":")[0] * 60) +
+      parseInt(timestamp.split(":")[1]);
+    console.log("seeked to: " + timestampInSeconds);
+    audio.currentTime = timestampInSeconds;
+  };
+
+  const handleViewModeToggle = () => {
+    if (viewMode === TRANSCRIPTION_VIEWER_MODE.VIEWER) {
+      setViewMode(TRANSCRIPTION_VIEWER_MODE.EDITOR);
+    } else {
+      setViewMode(TRANSCRIPTION_VIEWER_MODE.VIEWER);
+    }
+  };
+
+  const handleSpeakerLabelEdit = (speakerIndex, value) => {
+    setSpeakers((previousSpeakers) => {
+      const speakerList = [...previousSpeakers];
+      const currentSpeaker = speakerList[speakerIndex];
+      speakerList[speakerIndex] = { label: value, logo: currentSpeaker.logo };
+      return speakerList;
+    });
+  };
+
+  // See optimisation mechanism here, to reduce data being processed on each change.
+  const handleTranscriptTextChange = (key, value) => {
+    setTranscriptData((previousData) => {
+      const data = { ...previousData };
+      const transcriptSegment = data[key];
+      data[key] = { ...transcriptSegment, text: value };
+      return data;
+    });
+  };
+
+  const handleExportButtonClick = () => {
+    toggleExportModalVisibility(true);
+  };
+
+  const toggleExportModalVisibility = (flag) => {
+    setIsExportModalVisible(flag);
+  };
+
   return (
     <Box p={4}>
       <Grid
@@ -34,13 +158,30 @@ const Transcript = () => {
         {/* Header Section */}
         <Card p="1rem" height="100%" width="100%">
           <HStack direction="row" spacing={4}>
-            <Heading fontSize="2xl">Aug Weekly Sync-up</Heading>
+            {viewMode === TRANSCRIPTION_VIEWER_MODE.VIEWER ? (
+              <Heading fontSize="2xl">{transcriptionName}</Heading>
+            ) : (
+              <Input
+                value={transcriptionName}
+                onChange={(e) => setTranscriptionName(e.target.value)}
+              />
+            )}
             <Spacer />
-            <Button>
-              <Icon as={MdEdit} width="20px" height="20px" color="inherit" />
-              <Text fontSize="sm">Editor</Text>
+            <Button onClick={handleViewModeToggle}>
+              <Icon
+                as={getIconForViewerModeButton()}
+                width="20px"
+                height="20px"
+                color="inherit"
+                mr={2}
+              />
+              <Text fontSize="sm">{viewMode}</Text>
             </Button>
-            <Menu />
+            <Menu handleExport={handleExportButtonClick} />
+            <ExportModal
+              isExportModalVisible={isExportModalVisible}
+              toggleExportModalVisibility={toggleExportModalVisibility}
+            />
           </HStack>
           <HStack direction="row" mt="2rem" spacing={4}>
             <HStack direction="row">
@@ -50,7 +191,7 @@ const Transcript = () => {
                 height="20px"
                 color="inherit"
               />
-              <Text fontSize="sm">Fri, Aug 18, 2023 8:00 PM</Text>
+              <Text fontSize="sm">{transcriptionLastUpdatedDate}</Text>
             </HStack>
             <HStack direction="row">
               <Icon
@@ -59,89 +200,66 @@ const Transcript = () => {
                 height="20px"
                 color="inherit"
               />
-              <Text fontSize="sm">3:45</Text>
+              <Text fontSize="sm">{transcriptionDuration}</Text>
             </HStack>
           </HStack>
         </Card>
 
-        {/* Transcription Section */}
         <Card p="1rem" height="100%" width="100%" overflowY="auto">
-          {/* Speaker Transcript Cards */}
           <VStack spacing={8} alignItems="start" mt={4}>
-            {/* Speaker row items */}
-            <VStack alignItems="start">
-              <HStack alignItems="center">
-                <Avatar size="sm" src="speakerPhoto.jpg" />
-                <Text fontWeight="bold">Speaker 1</Text>
-                <Spacer />
-                <Text fontSize="sm" color="gray.500">
-                  00:00
-                </Text>
-              </HStack>
-              <Text>
-                Okay, we are starting the meeting now. Lets get started with it.
-              </Text>
-            </VStack>
-
-            {/* Repeat the above structure for each speaker */}
-            {/* Speaker 2 */}
-            <VStack alignItems="start">
-              <HStack alignItems="center">
-                <Avatar size="sm" src="speakerPhoto.jpg" />
-                <Text fontWeight="bold">Speaker 2</Text>
-                <Spacer />
-                <Text fontSize="sm" color="gray.500">
-                  00:00
-                </Text>
-              </HStack>
-              <Text>
-                Yeah, so last week we were discussing on the weekly progress of
-                the tasks. We want to track all of those now.
-              </Text>
-            </VStack>
-            {/* Speaker 3 */}
-            {/* ... */}
+            {Object.entries(transcriptData).map(([key, value]) => {
+              return (
+                <VStack alignItems="start">
+                  <HStack alignItems="center">
+                    <Avatar size="sm" src={speakers[value.speakerIndex].logo} />
+                    {viewMode === TRANSCRIPTION_VIEWER_MODE.VIEWER ? (
+                      <Text fontWeight="bold">
+                        {speakers[value.speakerIndex].label}
+                      </Text>
+                    ) : (
+                      <Input
+                        value={speakers[value.speakerIndex].label}
+                        onChange={(e) =>
+                          handleSpeakerLabelEdit(
+                            value.speakerIndex,
+                            e.target.value
+                          )
+                        }
+                      />
+                    )}
+                    <Spacer />
+                    <Text
+                      fontSize="sm"
+                      color="gray.500"
+                      fontWeight="bold"
+                      _hover={{ color: "blue.500" }}
+                      cursor="pointer"
+                      onClick={() =>
+                        handleAudioTranscriptTimestampClick(value.timestamp)
+                      }
+                    >
+                      {value.timestamp}
+                    </Text>
+                  </HStack>
+                  {viewMode === TRANSCRIPTION_VIEWER_MODE.VIEWER ? (
+                    <Text>{value.text}</Text>
+                  ) : (
+                    <Input
+                      width="100vh"
+                      value={value.text}
+                      onChange={(e) =>
+                        handleTranscriptTextChange(key, e.target.value)
+                      }
+                    />
+                  )}
+                </VStack>
+              );
+            })}
           </VStack>
+          <Box mb="30px" />
         </Card>
+        <AudioPlayer audio={audio} />
       </Grid>
-
-      {/* Audio Player Floater */}
-      <Box
-        position="fixed"
-        bottom="0"
-        right="40"
-        width="50%"
-        bg="white"
-        boxShadow="lg"
-        p={4}
-        zIndex="1"
-      >
-        <HStack spacing={4} align="center">
-          <IconButton aria-label="Rewind" icon={<Icon as={FaBackward} />} />
-          <IconButton
-            aria-label="Play"
-            icon={<Icon as={FaPlay} />}
-            colorScheme="teal"
-          />
-          <IconButton
-            aria-label="Pause"
-            icon={<Icon as={FaPause} />}
-            colorScheme="teal"
-          />
-          <IconButton aria-label="Forward" icon={<Icon as={FaForward} />} />
-        </HStack>
-      </Box>
     </Box>
   );
-};
-
-export default Transcript;
-
-/** Component View
- * This view is basically a component that will contain the transcription output performed on a given audio file with speaker diarization, timestamps, and audio playback with editing funcitonality on the text
- * 1. The component layout is a grid with 2 rows as card elements. Rows are spanned in the ratio of 2, 4 by heights and take all container width.
- * 2. The first row contains a heading text element, followed by two smaller text elements below it.
- * 3. The second row is basically the text output from the transcription with timestamps and speaker labelling. It wil be a list view with each row as a speaker labal on top with timestamp on the right and containig the text below. The speker lable should also contain a small icon on left for an icon or speaker photo.
- * 4. The botton side should also contain a small card layout which should be floating or clipped at bottom over the content below despite of any scrolling.
- * 5. This bottom floater should be a audio player view with corresponding buttons over it. Add these as per audio player designs in spotify or other music apps.
- */
+}

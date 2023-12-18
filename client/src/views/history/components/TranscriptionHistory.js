@@ -22,7 +22,6 @@ const INITIAL_STATE = {
   selectedTranscripts: [],
   transcripts: [],
   isExportModalVisible: false,
-  exportFormats: [],
 };
 
 function initializeState(initialState) {
@@ -50,26 +49,10 @@ export default function TranscriptionHistory(props) {
     setTranscripts,
     isExportModalVisible,
     setIsExportModalVisible,
-    exportFormats,
-    setExportFormats,
   } = state;
 
   const toggleExportModalVisibility = (flag) => {
     setIsExportModalVisible(flag);
-  };
-
-  const handleExportFormatsChange = (format) => {
-    if (exportFormats.includes(format)) {
-      setExportFormats(exportFormats.filter((item) => item !== format));
-    } else {
-      setExportFormats([...exportFormats, format]);
-    }
-  };
-
-  const handleExportAction = () => {
-    console.log("Exporting transcripts: ", exportFormats);
-    // WRAP EVERY API CALL With proper waiting states on UI
-    toggleExportModalVisibility(false);
   };
 
   const toggleDeleteTranscriptsModalVisibility = (flag) => {
@@ -78,7 +61,6 @@ export default function TranscriptionHistory(props) {
 
   const confirmDeleteTranscripts = () => {
     console.log("Deleting Selected Transcripts: " + JSON.stringify());
-    // Perform Delete Here
     setTranscriptsFetchStatus(TRANSCRIPTS_FETCH_STATUS.REQUESTED);
   };
 
@@ -271,11 +253,8 @@ export default function TranscriptionHistory(props) {
       )}
 
       <ExportModal
-        isVisible={isExportModalVisible}
-        toggleVisibility={(flag) => toggleExportModalVisibility(flag)}
-        exportFormats={exportFormats}
-        handleExportFormatsChange={(key) => handleExportFormatsChange(key)}
-        handleConfirmation={() => handleExportAction()}
+        isExportModalVisible={isExportModalVisible}
+        toggleExportModalVisibility={toggleExportModalVisibility}
       />
 
       <ActionConfirmation

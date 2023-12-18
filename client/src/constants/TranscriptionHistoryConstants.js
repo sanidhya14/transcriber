@@ -6,3 +6,8 @@ export const TRANSCRIPTS_FETCH_STATUS = {
 };
 
 export const PAGE_SIZE = 6;
+
+export const TRANSCRIPTION_VIEWER_MODE = {
+  VIEWER: "Viewer",
+  EDITOR: "Editor",
+};

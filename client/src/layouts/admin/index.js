@@ -1,10 +1,4 @@
-import {
-  Portal,
-  Box,
-  useDisclosure,
-  HStack,
-  Flex,
-} from "@chakra-ui/react";
+import { Portal, Box, useDisclosure, HStack, Flex } from "@chakra-ui/react";
 import Navbar from "components/navbar/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
 import React, { useState } from "react";
@@ -113,7 +107,6 @@ export default function Dashboard(props) {
   const { onOpen } = useDisclosure();
   document.documentElement.dir = "ltr";
 
-
   /**
    * New code below
    */
@@ -122,21 +115,37 @@ export default function Dashboard(props) {
 
   const handleSidebarToggle = () => {
     setSidebarToggle(!sidebarToggle);
-  }
+  };
 
   return (
     <Box>
       <Portal>
-        <Box as="nav" pos="fixed" top="0" left="0" w="100%">
-          <Navbar
-            handleSidebarToggle={handleSidebarToggle}
-          />
+        <Box as="nav" pos="fixed" top="0" left="0" w="100%" zIndex="1001">
+          <Navbar handleSidebarToggle={handleSidebarToggle} />
         </Box>
       </Portal>
       <Flex>
-        <Sidebar isExpanded={sidebarToggle} routes={routes} display="none" {...rest} />
+        <Box
+          pos="fixed"
+          h="100vh" /* Make sidebar take full viewport height */
+          w={sidebarToggle ? "250px" : "80px"}
+          overflow="auto" /* Enable scrolling if the content exceeds viewport height */
+          transition="left 0.3s ease-out" /* Apply smooth transition effect */
+          zIndex="1000" /* Ensure sidebar appears above other content */
+        >
+          <Sidebar
+            isExpanded={sidebarToggle}
+            routes={routes}
+            display="none"
+            {...rest}
+          />
+        </Box>
+
         <Box
           float="right"
+          ml={
+            sidebarToggle ? "220px" : "50px"
+          } /* Adjust according to sidebar width */
           minHeight="100vh"
           height="100%"
           overflow="auto"
@@ -168,6 +177,6 @@ export default function Dashboard(props) {
           ) : null}
         </Box>
       </Flex>
-    </Box >
+    </Box>
   );
 }
