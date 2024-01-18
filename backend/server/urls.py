@@ -15,8 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from channels.routing import ProtocolTypeRouter, URLRouter
+from transcribe.urls import websocket_urlpatterns
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+
 ]
+
+application = ProtocolTypeRouter({
+    'websocket': URLRouter(
+        websocket_urlpatterns
+    ),
+})

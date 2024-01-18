@@ -163,3 +163,5 @@ cython_debug/
 node_modules/
 
 .code-workspace
+.DS_Store
+.vscode/
