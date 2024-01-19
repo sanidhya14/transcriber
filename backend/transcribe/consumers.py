@@ -12,6 +12,7 @@ from .core.transcriptionModels import (
     FasterWhisperModelOptions,
     TranscriptionInferenceOptions,
 )
+from .core.utils.commons import generate_request_id
 
 
 class TranscribeConsumer(WebsocketConsumer):
@@ -25,12 +26,21 @@ class TranscribeConsumer(WebsocketConsumer):
         input_data = json.loads(text_data)
         transcription_request = TranscriptionRequest(
             model_options=FasterWhisperModelOptions(**input_data["model_options"]),
-            inference_options=TranscriptionInferenceOptions(**input_data["inference_options"]),
+            inference_options=TranscriptionInferenceOptions(
+                **input_data["inference_options"]
+            ),
             output_options=TransciptionOutputOptions(**input_data["output_options"]),
         )
-        self.send(text_data=json.dumps({"message": "Starting Transcription"}))
+        request_id = generate_request_id()
+        self.send(
+            text_data=json.dumps(
+                {"id": request_id, "status": "TRANSCRIPTION_INITIALIZING"}
+            )
+        )
         self.transcribe(transcription_request)
-        self.send(text_data=json.dumps({"message": "Transcription Finished"}))
+        self.send(
+            text_data=json.dumps({"id": request_id, "status": "TRANSCRIPTION_FINISHED"})
+        )
 
     def transcribe(self, request: TranscriptionRequest):
         model = get_model_instance(request.model_options)
