@@ -2,8 +2,10 @@ from typing import BinaryIO, List, NamedTuple, Optional, Union, Iterable
 import numpy as np
 from faster_whisper.transcribe import Segment, TranscriptionInfo
 from faster_whisper.vad import VadOptions
+import torch
 
-#See Args here: https://github.com/guillaumekln/faster-whisper/blob/d4222da952fde2aa4064aad820e207d0c7a9de75/faster_whisper/transcribe.py#LL90C11-L90C29
+
+# See Args here: https://github.com/guillaumekln/faster-whisper/blob/d4222da952fde2aa4064aad820e207d0c7a9de75/faster_whisper/transcribe.py#LL90C11-L90C29
 class FasterWhisperModelOptions(NamedTuple):
     model_size: str = "small"
     device: str = "cpu"
@@ -15,6 +17,7 @@ class FasterWhisperModelOptions(NamedTuple):
     # TODO: Update to fetch model only which is locally stored.
     # Custom impl will be done to fetch from self managed remote & not HuggingFace
     local_files_only: bool = False
+
 
 # See Args from: https://github.com/guillaumekln/faster-whisper/blob/d4222da952fde2aa4064aad820e207d0c7a9de75/faster_whisper/transcribe.py#L187
 class TranscriptionInferenceOptions(NamedTuple):
@@ -32,10 +35,19 @@ class TranscriptionInferenceOptions(NamedTuple):
     log_prob_threshold: float = -1.0
     no_speech_threshold: float = 0.6
     word_timestamps: bool = True
-    prepend_punctuations: str = "\"\'“¿([{-"
-    append_punctuations: str = "\"\'.。,，!！?？:：”)]}、"
+    prepend_punctuations: str = "\"'“¿([{-"
+    append_punctuations: str = "\"'.。,，!！?？:：”)]}、"
     vad_filter: bool = False
     vad_parameters: dict = None
+
+
+class DiarizarionOptions(NamedTuple):
+    enabled: bool = True
+    device: Optional[Union[str, torch.device]] = ("cpu")
+    num_speakers: int = None
+    min_speakers: int = None
+    max_speakers: int = None
+
 
 class TransciptionOutputOptions(NamedTuple):
     output_file_name: str
@@ -45,10 +57,13 @@ class TransciptionOutputOptions(NamedTuple):
     max_line_width: int = None
     max_line_count: int = None
 
+
 class TranscriptionRequest(NamedTuple):
     model_options: FasterWhisperModelOptions
     inference_options: TranscriptionInferenceOptions
     output_options: TransciptionOutputOptions
+    diarization_options: DiarizarionOptions
+
 
 class TranscriptionResult(NamedTuple):
     segments: Iterable[Segment]

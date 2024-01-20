@@ -92,8 +92,12 @@ class WriteTXT(ResultWriter):
     extension: str = "txt"
 
     def write_result(self, result: dict, file: TextIO, options: dict):
-        for segment in result['segments']:
-            print(segment.text.strip(), file=file, flush=True)
+        for segment in result["segments"]:
+            print(
+                segment.get("speaker", "") + ":    " + segment["text"].strip(),
+                file=file,
+                flush=True,
+            )
 
 
 class SubtitlesWriter(ResultWriter):
@@ -112,19 +116,19 @@ class SubtitlesWriter(ResultWriter):
             line_count = 1
             # the next subtitle to yield (a list of word timings with whitespace)
             subtitle: list[dict] = []
-            last = result['segments'][0].words[0].start
-            for segment in result['segments']:
-                for i, original_timing in enumerate(segment.words):
+            last = result["segments"][0]["words"][0]["start"]
+            for segment in result["segments"]:
+                for i, original_timing in enumerate(segment["words"]):
                     timing = original_timing.copy()
-                    long_pause = not preserve_segments and timing.start - last > 3.0
+                    long_pause = not preserve_segments and timing["start"] - last > 3.0
                     has_room = line_len + len(timing.word) <= max_line_width
                     seg_break = i == 0 and len(subtitle) > 0 and preserve_segments
                     if line_len > 0 and has_room and not long_pause and not seg_break:
                         # line continuation
-                        line_len += len(timing.word)
+                        line_len += len(timing["word"])
                     else:
                         # new line
-                        timing.word = timing.word.strip()
+                        timing["word"] = timing["word"].strip()
                         if (
                             len(subtitle) > 0
                             and max_line_count is not None
@@ -138,24 +142,24 @@ class SubtitlesWriter(ResultWriter):
                         elif line_len > 0:
                             # line break
                             line_count += 1
-                            timing.word = "\n" + timing.word
-                        line_len = len(timing.word.strip())
+                            timing["word"] = "\n" + timing["word"]
+                        line_len = len(timing["word"].strip())
                     subtitle.append(timing)
-                    last = timing.start
+                    last = timing["start"]
             if len(subtitle) > 0:
                 yield subtitle
 
-        if "words" in result['segments'][0]:
+        if "words" in result["segments"][0]:
             for subtitle in iterate_subtitles():
-                subtitle_start = self.format_timestamp(subtitle[0].start)
-                subtitle_end = self.format_timestamp(subtitle[-1].end)
-                subtitle_text = "".join([word.word for word in subtitle])
+                subtitle_start = self.format_timestamp(subtitle[0]["start"])
+                subtitle_end = self.format_timestamp(subtitle[-1]["end"])
+                subtitle_text = "".join([word["word"] for word in subtitle])
                 if highlight_words:
                     last = subtitle_start
-                    all_words = [timing.word for timing in subtitle]
+                    all_words = [timing["word"] for timing in subtitle]
                     for i, this_word in enumerate(subtitle):
-                        start = self.format_timestamp(this_word.start)
-                        end = self.format_timestamp(this_word.end)
+                        start = self.format_timestamp(this_word["start"])
+                        end = self.format_timestamp(this_word["end"])
                         if last != start:
                             yield last, start, subtitle_text
 
@@ -171,10 +175,10 @@ class SubtitlesWriter(ResultWriter):
                 else:
                     yield subtitle_start, subtitle_end, subtitle_text
         else:
-            for segment in result['segments']:
-                segment_start = self.format_timestamp(segment.start)
-                segment_end = self.format_timestamp(segment.end)
-                segment_text = segment.text.strip().replace("-->", "->")
+            for segment in result["segments"]:
+                segment_start = self.format_timestamp(segment["start"])
+                segment_end = self.format_timestamp(segment["end"])
+                segment_text = segment["text"].strip().replace("-->", "->")
                 yield segment_start, segment_end, segment_text
 
     def format_timestamp(self, seconds: float):
@@ -222,10 +226,10 @@ class WriteTSV(ResultWriter):
 
     def write_result(self, result: dict, file: TextIO, options: dict):
         print("start", "end", "text", sep="\t", file=file)
-        for segment in result['segments']:
-            print(round(1000 * segment.start), file=file, end="\t")
-            print(round(1000 * segment.end), file=file, end="\t")
-            print(segment.text.strip().replace("\t", " "), file=file, flush=True)
+        for segment in result["segments"]:
+            print(round(1000 * segment["start"]), file=file, end="\t")
+            print(round(1000 * segment["end"]), file=file, end="\t")
+            print(segment["text"].strip().replace("\t", " "), file=file, flush=True)
 
 
 class WriteJSON(ResultWriter):
@@ -257,7 +261,11 @@ def get_writer(
 
     return writers[output_format](output_dir)
 
+
 def log_result(result: dict, enabled: bool):
     if enabled:
-        for segment in result['segments']:
-            print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
+        for segment in result["segments"]:
+            print(
+                "[%.2fs -> %.2fs] %s"
+                % (segment["start"], segment["end"], segment["text"])
+            )

@@ -2,3 +2,7 @@ django==4.2.0
 channels[daphne]
 faster-whisper @ git+https://github.com/SYSTRAN/faster-whisper.git@0.10.0
 pydub==0.25.1
+pyannote-audio==3.1.1
+numpy==1.26.3
+pandas==2.2.0
+torch==2.1.2
