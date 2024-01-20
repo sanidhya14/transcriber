@@ -26,8 +26,6 @@ def transcribe_with_faster_whisper(
         vad_filter=inference_options.vad_filter,
         vad_parameters=inference_options.vad_parameters,
     )
-    # The transcription will actually run here
-    segments = list(segments)
     return TranscriptionResult(segments=segments, info=info)
 
 def get_model_instance(

@@ -4,7 +4,6 @@ import re
 import sys
 import zlib
 from typing import Callable, Optional, TextIO
-from ..transcriptionModels import TranscriptionResult
 
 system_encoding = sys.getdefaultencoding()
 
@@ -75,7 +74,7 @@ class ResultWriter:
     def __init__(self, output_dir: str):
         self.output_dir = output_dir
 
-    def __call__(self, result: TranscriptionResult, audio_path: str, options: dict):
+    def __call__(self, result: dict, audio_path: str, options: dict):
         audio_basename = os.path.basename(audio_path)
         audio_basename = os.path.splitext(audio_basename)[0]
         output_path = os.path.join(
@@ -85,15 +84,15 @@ class ResultWriter:
         with open(output_path, "w", encoding="utf-8") as f:
             self.write_result(result, file=f, options=options)
 
-    def write_result(self, result: TranscriptionResult, file: TextIO, options: dict):
+    def write_result(self, result: dict, file: TextIO, options: dict):
         raise NotImplementedError
 
 
 class WriteTXT(ResultWriter):
     extension: str = "txt"
 
-    def write_result(self, result: TranscriptionResult, file: TextIO, options: dict):
-        for segment in result.segments:
+    def write_result(self, result: dict, file: TextIO, options: dict):
+        for segment in result['segments']:
             print(segment.text.strip(), file=file, flush=True)
 
 
@@ -101,7 +100,7 @@ class SubtitlesWriter(ResultWriter):
     always_include_hours: bool
     decimal_marker: str
 
-    def iterate_result(self, result: TranscriptionResult, options: dict):
+    def iterate_result(self, result: dict, options: dict):
         raw_max_line_width: Optional[int] = options["max_line_width"]
         max_line_count: Optional[int] = options["max_line_count"]
         highlight_words: bool = options["highlight_words"]
@@ -113,8 +112,8 @@ class SubtitlesWriter(ResultWriter):
             line_count = 1
             # the next subtitle to yield (a list of word timings with whitespace)
             subtitle: list[dict] = []
-            last = result.segments[0].words[0].start
-            for segment in result.segments:
+            last = result['segments'][0].words[0].start
+            for segment in result['segments']:
                 for i, original_timing in enumerate(segment.words):
                     timing = original_timing.copy()
                     long_pause = not preserve_segments and timing.start - last > 3.0
@@ -146,7 +145,7 @@ class SubtitlesWriter(ResultWriter):
             if len(subtitle) > 0:
                 yield subtitle
 
-        if "words" in result.segments[0]:
+        if "words" in result['segments'][0]:
             for subtitle in iterate_subtitles():
                 subtitle_start = self.format_timestamp(subtitle[0].start)
                 subtitle_end = self.format_timestamp(subtitle[-1].end)
@@ -172,7 +171,7 @@ class SubtitlesWriter(ResultWriter):
                 else:
                     yield subtitle_start, subtitle_end, subtitle_text
         else:
-            for segment in result.segments:
+            for segment in result['segments']:
                 segment_start = self.format_timestamp(segment.start)
                 segment_end = self.format_timestamp(segment.end)
                 segment_text = segment.text.strip().replace("-->", "->")
@@ -191,7 +190,7 @@ class WriteVTT(SubtitlesWriter):
     always_include_hours: bool = False
     decimal_marker: str = "."
 
-    def write_result(self, result: TranscriptionResult, file: TextIO, options: dict):
+    def write_result(self, result: dict, file: TextIO, options: dict):
         print("WEBVTT\n", file=file)
         for start, end, text in self.iterate_result(result, options):
             print(f"{start} --> {end}\n{text}\n", file=file, flush=True)
@@ -202,7 +201,7 @@ class WriteSRT(SubtitlesWriter):
     always_include_hours: bool = True
     decimal_marker: str = ","
 
-    def write_result(self, result: TranscriptionResult, file: TextIO, options: dict):
+    def write_result(self, result: dict, file: TextIO, options: dict):
         for i, (start, end, text) in enumerate(
             self.iterate_result(result, options), start=1
         ):
@@ -221,9 +220,9 @@ class WriteTSV(ResultWriter):
 
     extension: str = "tsv"
 
-    def write_result(self, result: TranscriptionResult, file: TextIO, options: dict):
+    def write_result(self, result: dict, file: TextIO, options: dict):
         print("start", "end", "text", sep="\t", file=file)
-        for segment in result.segments:
+        for segment in result['segments']:
             print(round(1000 * segment.start), file=file, end="\t")
             print(round(1000 * segment.end), file=file, end="\t")
             print(segment.text.strip().replace("\t", " "), file=file, flush=True)
@@ -232,13 +231,13 @@ class WriteTSV(ResultWriter):
 class WriteJSON(ResultWriter):
     extension: str = "json"
 
-    def write_result(self, result: TranscriptionResult, file: TextIO, options: dict):
+    def write_result(self, result: dict, file: TextIO, options: dict):
         json.dump(result, file)
 
 
 def get_writer(
     output_format: str, output_dir: str
-) -> Callable[[TranscriptionResult, TextIO, dict], None]:
+) -> Callable[[dict, TextIO, dict], None]:
     writers = {
         "txt": WriteTXT,
         "vtt": WriteVTT,
@@ -250,7 +249,7 @@ def get_writer(
     if output_format == "all":
         all_writers = [writer(output_dir) for writer in writers.values()]
 
-        def write_all(result: TranscriptionResult, file: TextIO, options: dict):
+        def write_all(result: dict, file: TextIO, options: dict):
             for writer in all_writers:
                 writer(result, file, options)
 
@@ -258,7 +257,7 @@ def get_writer(
 
     return writers[output_format](output_dir)
 
-def log_result(result: TranscriptionResult, enabled: bool):
+def log_result(result: dict, enabled: bool):
     if enabled:
-        for segment in result.segments:
+        for segment in result['segments']:
             print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
