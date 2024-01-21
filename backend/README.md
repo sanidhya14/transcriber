@@ -2,6 +2,15 @@
 
 This is the Django hosted backend for the application.
 
+## TODO
+- [] Perform VAD filtering before diarization
+- [] Manage audio loading & processing only once for each transcription job
+- [] Maintain new API for model/dependency management
+- [] Add tests for APIs
+- [] Update notifications for transcription & diarization statuses (per audio chunk processing [30s for transcription])
+- [] Fix for slow diarization (see bug fix required)
+- [] Handle multiple media formats (audio & video)
+
 ## Project structure: [Remove once setup]
 
 ```
@@ -50,8 +59,8 @@ This will keep current session in virtual envionment. Useful for active developm
 1. Create and activate the virtual environment
 
 ```
-virtualenv venv
-source venv/bin/activate
+conda create --name [env name]
+conda activate [env name]
 ```
 
 2. Install requirements
@@ -69,7 +78,7 @@ python3 manage.py runserver
 4. Deactivate virtual env
 
 ```
-deactivate
+conda deactivate
 ```
 
 ### B. Run for Testing

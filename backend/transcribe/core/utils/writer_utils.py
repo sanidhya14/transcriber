@@ -4,6 +4,7 @@ import re
 import sys
 import zlib
 from typing import Callable, Optional, TextIO
+from collections import Counter
 
 system_encoding = sys.getdefaultencoding()
 
@@ -68,11 +69,28 @@ def format_timestamp(
     )
 
 
-def format_transcript_text(segment: str, options: dict) -> str:
+def format_transcript_text(segment: dict, options: dict) -> str:
     speaker_header = ""
     if options.get("include_speaker", False) == True:
         speaker_header = f'[{segment.get("speaker", "")}]: '
     return f'{speaker_header}{segment["text"].strip()}'
+
+
+def get_speaker_for_subtitle(words: list[dict]) -> str:
+    speaker_count = Counter(word.get("speaker", "") for word in words)
+    highest_frequency_speaker = max(
+        speaker_count,
+        key=lambda speaker: (
+            speaker_count[speaker],
+            -words[::-1].index(
+                next(word for word in reversed(words) if word.get("speaker", "") == speaker)
+            ),
+        ),
+    )
+    if highest_frequency_speaker != "":
+        return f"[{highest_frequency_speaker}]: "
+
+    return highest_frequency_speaker
 
 
 class ResultWriter:
@@ -127,6 +145,7 @@ class SubtitlesWriter(ResultWriter):
             for segment in result["segments"]:
                 for i, original_timing in enumerate(segment["words"]):
                     timing = original_timing.copy()
+                    print("Timing being copied: " + str(timing) + "\n")
                     long_pause = not preserve_segments and timing["start"] - last > 3.0
                     has_room = line_len + len(timing["word"]) <= max_line_width
                     seg_break = i == 0 and len(subtitle) > 0 and preserve_segments
@@ -161,6 +180,8 @@ class SubtitlesWriter(ResultWriter):
                 subtitle_start = self.format_timestamp(subtitle[0]["start"])
                 subtitle_end = self.format_timestamp(subtitle[-1]["end"])
                 subtitle_text = "".join([word["word"] for word in subtitle])
+                speaker_header = get_speaker_for_subtitle(subtitle)
+                subtitle_text = speaker_header + subtitle_text
                 if highlight_words:
                     last = subtitle_start
                     all_words = [timing["word"] for timing in subtitle]
@@ -185,7 +206,9 @@ class SubtitlesWriter(ResultWriter):
             for segment in result["segments"]:
                 segment_start = self.format_timestamp(segment["start"])
                 segment_end = self.format_timestamp(segment["end"])
-                segment_text = segment["text"].strip().replace("-->", "->")
+                segment_text = format_transcript_text(segment, options).replace(
+                    "-->", "->"
+                )
                 yield segment_start, segment_end, segment_text
 
     def format_timestamp(self, seconds: float):
