@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 from .core.transcribe import TranscriptionPipeline, transcribe_async
-from .core.utils.writer_utils import get_writer, log_result
+from .core.utils.writer_utils import get_writers
 from .core.transcriptionModels import (
     DiarizarionOptions,
     TransciptionOutputOptions,
@@ -9,11 +9,11 @@ from .core.transcriptionModels import (
     FasterWhisperModelOptions,
     TranscriptionInferenceOptions,
 )
-from .core.utils.commons import generate_request_id
+from .core.utils.commons import generate_request_id, notify
 from .constants import response_codes
 from .core.diarize import DiarizationPipeline, assign_speakers
 import pickle
-
+import logging
 
 class TranscribeConsumer(WebsocketConsumer):
     def connect(self):
@@ -23,8 +23,10 @@ class TranscribeConsumer(WebsocketConsumer):
         pass
 
     def receive(self, text_data):
+        logger = logging.getLogger(__name__)
         request_id = ""
         try:
+            # Parse request
             input_data = json.loads(text_data)
             request = TranscriptionRequest(
                 model_options=FasterWhisperModelOptions(**input_data["model_options"]),
@@ -38,48 +40,48 @@ class TranscribeConsumer(WebsocketConsumer):
                     **input_data["diarization_options"]
                 ),
             )
+            # Initialize
             request_id = generate_request_id()
-            self.send(
-                text_data=json.dumps(
-                    {
-                        "id": request_id,
-                        "status": response_codes.TRANSCRIPTION_INITIALIZING,
-                    }
-                )
+            notify(
+                self,
+                {
+                    "id": request_id,
+                    "status": response_codes.TRANSCRIPTION_INITIALIZING,
+                },
             )
+            # Transcribe
             transcription_output = self.transcribe(request_id, request)
-            self.send(
-                text_data=json.dumps(
-                    {"id": request_id, "status": response_codes.TRANSCRIPTION_COMPLETED}
-                )
+            notify(
+                self,
+                {"id": request_id, "status": response_codes.TRANSCRIPTION_COMPLETED},
             )
+            # Diarize
             if request.diarization_options.enabled == True:
                 transcription_result = self.diarize(request, transcription_output)
-                self.send(
-                    text_data=json.dumps(
-                        {
-                            "id": request_id,
-                            "status": response_codes.DIARIZATION_COMPLETED,
-                        }
-                    )
+                notify(
+                    self,
+                    {
+                        "id": request_id,
+                        "status": response_codes.DIARIZATION_COMPLETED,
+                    },
                 )
             else:
                 transcription_result = transcription_output
-
+            # Export
             self.export_output(
                 transcription_result,
                 request.output_options,
             )
 
         except Exception as e:
-            self.send(
-                text_data=json.dumps(
-                    {
-                        "id": request_id,
-                        "status": response_codes.TRANSCRIPTION_FAILED,
-                        "errorMessage": e,
-                    }
-                )
+            logger.error("Failure occured: ", e)
+            notify(
+                self,
+                {
+                    "id": request_id,
+                    "status": response_codes.TRANSCRIPTION_FAILED,
+                    "errorMessage": str(e),
+                },
             )
 
     def transcribe(self, request_id: str, request: TranscriptionRequest) -> dict:
@@ -100,9 +102,9 @@ class TranscribeConsumer(WebsocketConsumer):
         result: dict,
         output_options: TransciptionOutputOptions,
     ):
-        writer = get_writer(
+        writer = get_writers(
             output_dir=output_options.output_dir,
-            output_format=output_options.output_format,
+            output_formats=output_options.output_formats,
         )
         writer(
             result,

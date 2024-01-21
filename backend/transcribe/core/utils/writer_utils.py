@@ -68,6 +68,13 @@ def format_timestamp(
     )
 
 
+def format_transcript_text(segment: str, options: dict) -> str:
+    speaker_header = ""
+    if options.get("include_speaker", False) == True:
+        speaker_header = f'[{segment.get("speaker", "")}]: '
+    return f'{speaker_header}{segment["text"].strip()}'
+
+
 class ResultWriter:
     extension: str
 
@@ -94,7 +101,7 @@ class WriteTXT(ResultWriter):
     def write_result(self, result: dict, file: TextIO, options: dict):
         for segment in result["segments"]:
             print(
-                segment.get("speaker", "") + ":    " + segment["text"].strip(),
+                format_transcript_text(segment, options),
                 file=file,
                 flush=True,
             )
@@ -121,7 +128,7 @@ class SubtitlesWriter(ResultWriter):
                 for i, original_timing in enumerate(segment["words"]):
                     timing = original_timing.copy()
                     long_pause = not preserve_segments and timing["start"] - last > 3.0
-                    has_room = line_len + len(timing.word) <= max_line_width
+                    has_room = line_len + len(timing["word"]) <= max_line_width
                     seg_break = i == 0 and len(subtitle) > 0 and preserve_segments
                     if line_len > 0 and has_room and not long_pause and not seg_break:
                         # line continuation
@@ -229,7 +236,11 @@ class WriteTSV(ResultWriter):
         for segment in result["segments"]:
             print(round(1000 * segment["start"]), file=file, end="\t")
             print(round(1000 * segment["end"]), file=file, end="\t")
-            print(segment["text"].strip().replace("\t", " "), file=file, flush=True)
+            print(
+                format_transcript_text(segment, options).replace("\t", " "),
+                file=file,
+                flush=True,
+            )
 
 
 class WriteJSON(ResultWriter):
@@ -239,8 +250,8 @@ class WriteJSON(ResultWriter):
         json.dump(result, file)
 
 
-def get_writer(
-    output_format: str, output_dir: str
+def get_writers(
+    output_formats: list[str], output_dir: str
 ) -> Callable[[dict, TextIO, dict], None]:
     writers = {
         "txt": WriteTXT,
@@ -250,22 +261,13 @@ def get_writer(
         "json": WriteJSON,
     }
 
-    if output_format == "all":
-        all_writers = [writer(output_dir) for writer in writers.values()]
+    if "all" in output_formats:
+        selected_writers = [writer(output_dir) for writer in writers.values()]
+    else:
+        selected_writers = [writers[format](output_dir) for format in output_formats]
 
-        def write_all(result: dict, file: TextIO, options: dict):
-            for writer in all_writers:
-                writer(result, file, options)
+    def write_selected(result: dict, file: TextIO, options: dict):
+        for writer in selected_writers:
+            writer(result, file, options)
 
-        return write_all
-
-    return writers[output_format](output_dir)
-
-
-def log_result(result: dict, enabled: bool):
-    if enabled:
-        for segment in result["segments"]:
-            print(
-                "[%.2fs -> %.2fs] %s"
-                % (segment["start"], segment["end"], segment["text"])
-            )
+    return write_selected

@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import logging
+import os
+
 
 ASGI_APPLICATION = "server.asgi.application"
 
@@ -112,3 +115,30 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/Users/khajuri/Desktop/projectx/logs/logfile.log',  # Set as log destination path
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ["file"],
+            "level": "DEBUG",
+            'propagate': False,
+        },
+        "root": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+    },
+}
+

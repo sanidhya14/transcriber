@@ -43,7 +43,7 @@ class TranscriptionInferenceOptions(NamedTuple):
 
 class DiarizarionOptions(NamedTuple):
     enabled: bool = True
-    device: Optional[Union[str, torch.device]] = ("cpu")
+    device: Optional[Union[str, torch.device]] = "cpu"
     num_speakers: int = None
     min_speakers: int = None
     max_speakers: int = None
@@ -52,7 +52,8 @@ class DiarizarionOptions(NamedTuple):
 class TransciptionOutputOptions(NamedTuple):
     output_file_name: str
     output_dir: str
-    output_format: str = "all"
+    output_formats: list[str] = ["all"]
+    include_speaker: bool = True
     highlight_words: bool = False
     max_line_width: int = None
     max_line_count: int = None
@@ -68,3 +69,69 @@ class TranscriptionRequest(NamedTuple):
 class TranscriptionResult(NamedTuple):
     segments: Iterable[Segment]
     info: TranscriptionInfo
+
+
+class CustomWord:
+    def __init__(self, start, end, word, probability):
+        self.start = start
+        self.end = end
+        self.word = word
+        self.probability = probability
+
+    def to_dict(self):
+        return self.__dict__
+
+
+class CustomSegment:
+    def __init__(
+        self,
+        id,
+        seek,
+        start,
+        end,
+        text,
+        tokens,
+        temperature,
+        avg_logprob,
+        compression_ratio,
+        no_speech_prob,
+        words,
+    ):
+        self.id = id
+        self.seek = seek
+        self.start = start
+        self.end = end
+        self.text = text
+        self.tokens = tokens
+        self.temperature = temperature
+        self.avg_logprob = avg_logprob
+        self.compression_ratio = compression_ratio
+        self.no_speech_prob = no_speech_prob
+        self.words = [self.deserialize_word(word).to_dict() for word in words]
+
+    def deserialize_word(self, input_word):
+        return CustomWord(
+            start=input_word.start,
+            end=input_word.end,
+            word=input_word.word,
+            probability=input_word.probability,
+        )
+
+    def to_dict(self):
+        return self.__dict__
+
+
+def deserialize_segment(segment):
+    return CustomSegment(
+        id=segment.id,
+        seek=segment.seek,
+        start=segment.start,
+        end=segment.end,
+        text=segment.text,
+        tokens=segment.tokens,
+        temperature=segment.temperature,
+        avg_logprob=segment.avg_logprob,
+        compression_ratio=segment.compression_ratio,
+        no_speech_prob=segment.no_speech_prob,
+        words=segment.words,
+    )

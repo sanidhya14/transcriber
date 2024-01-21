@@ -4,12 +4,15 @@ from .transcriptionModels import (
     TranscriptionInferenceOptions,
     TranscriptionResult,
     FasterWhisperModelOptions,
+    deserialize_segment,
 )
 from .utils.audio import fetch_audio_metadata
 import time
 from django.conf import settings
 from ..constants import response_codes
 from .utils.commons import notify
+import logging
+
 
 class TranscriptionPipeline:
     def __init__(
@@ -59,26 +62,23 @@ def transcribe_async(
     inference_options: TranscriptionInferenceOptions,
     result: TranscriptionResult,
 ) -> dict:
+    logger = logging.getLogger(__name__)
     audio_metadata = fetch_audio_metadata(inference_options.audio)
     start_time = time.time()
     segment_collector_list = []
     for segment in result.segments:
-        if settings.DEBUG:
-            print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
-
-        # TODO: generify
-        segment_dict = {
-            "start": segment.start,
-            "end": segment.end,
-            "text": segment.text,
-        }
-        if settings.DEBUG:
-            print(segment_dict)
-
+        logger.debug(f"Segment received: {segment}")
+        segment_dict = deserialize_segment(segment).to_dict()
+        logger.debug(f"Deserialized segment: {str(segment_dict)}")
+        logger.info(
+            "Text: [%.2fs -> %.2fs] %s"
+            % (segment_dict["start"], segment_dict["end"], segment_dict["text"])
+        )
         segment_collector_list.append(segment_dict)
 
         if time.time() - start_time > 0:
-            notify(consumer,
+            notify(
+                consumer,
                 {
                     "id": request_id,
                     "status": response_codes.TRANSCRIPTION_IN_PROGRESS,
@@ -86,6 +86,4 @@ def transcribe_async(
                     "estimatedTime": "",
                 },
             )
-
-    transcription_results = {"segments": segment_collector_list}
-    return transcription_results
+    return {"segments": segment_collector_list}

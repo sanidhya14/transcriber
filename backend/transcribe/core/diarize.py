@@ -74,20 +74,20 @@ def assign_speakers(diarize_df, transcript_result, fill_nearest=False):
             )
             seg["speaker"] = speaker
 
-        # assign speaker to words. NOT IN SCOPE
-        # if 'words' in seg:
-        #     for word in seg['words']:
-        #         if 'start' in word:
-        #             diarize_df['intersection'] = np.minimum(diarize_df['end'], word['end']) - np.maximum(diarize_df['start'], word['start'])
-        #             diarize_df['union'] = np.maximum(diarize_df['end'], word['end']) - np.minimum(diarize_df['start'], word['start'])
-        #             # remove no hit
-        #             if not fill_nearest:
-        #                 dia_tmp = diarize_df[diarize_df['intersection'] > 0]
-        #             else:
-        #                 dia_tmp = diarize_df
-        #             if len(dia_tmp) > 0:
-        #                 # sum over speakers
-        #                 speaker = dia_tmp.groupby("speaker")["intersection"].sum().sort_values(ascending=False).index[0]
-        # word["speaker"] = speaker
+        #assign speaker to words.
+        if 'words' in seg:
+            for word in seg['words']:
+                if 'start' in word:
+                    diarize_df['intersection'] = np.minimum(diarize_df['end'], word['end']) - np.maximum(diarize_df['start'], word['start'])
+                    diarize_df['union'] = np.maximum(diarize_df['end'], word['end']) - np.minimum(diarize_df['start'], word['start'])
+                    # remove no hit
+                    if not fill_nearest:
+                        dia_tmp = diarize_df[diarize_df['intersection'] > 0]
+                    else:
+                        dia_tmp = diarize_df
+                    if len(dia_tmp) > 0:
+                        # sum over speakers
+                        speaker = dia_tmp.groupby("speaker")["intersection"].sum().sort_values(ascending=False).index[0]
+        word["speaker"] = speaker
 
     return transcript_result
