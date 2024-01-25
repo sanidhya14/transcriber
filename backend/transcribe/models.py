@@ -4,6 +4,8 @@ class TranscriptionJobHistory(models.Model):
     transcriptionId = models.CharField(max_length=255, primary_key=True)
     runMode = models.CharField(max_length=255)
     status = models.CharField(max_length=255)
+    startDate = models.CharField(max_length=255)
+    endDate = models.CharField(max_length=255)
     context = models.TextField()
 
 class TranscriptMetadata(models.Model):

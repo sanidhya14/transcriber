@@ -1,5 +1,6 @@
 # https://github.com/pyannote/pyannote-audio/blob/develop/tutorials/applying_a_pipeline.ipynb
 
+from channels.generic.websocket import WebsocketConsumer
 import numpy as np
 import pandas as pd
 from pyannote.audio import Pipeline
@@ -8,7 +9,9 @@ import torch
 
 from .utils.audio import load_audio, SAMPLE_RATE
 from ..core.transcriptionModels import DiarizarionOptions
-
+from ..core.utils.db_utils import update_job_history
+from ..constants import response_codes
+from ..core.utils.commons import notify
 
 class DiarizationPipeline:
     def __init__(
@@ -25,9 +28,21 @@ class DiarizationPipeline:
 
     def __call__(
         self,
+        consumer: WebsocketConsumer,
+        request_id: str,
         audio: Union[str, np.ndarray],
         diarization_options: DiarizarionOptions,
     ):
+        update_job_history(
+            request_id, {"status": response_codes.DIARIZATION_IN_PROGRESS}
+        )
+        notify(
+            consumer,
+            {
+                "id": request_id,
+                "status": response_codes.DIARIZATION_IN_PROGRESS,
+            },
+        )
         if isinstance(audio, str):
             audio = load_audio(audio)
         audio_data = {
@@ -49,7 +64,13 @@ class DiarizationPipeline:
         return diarize_df
 
 
-def assign_speakers(diarize_df, transcript_result, fill_nearest=False):
+def assign_speakers(
+    consumer: WebsocketConsumer,
+    diarize_df,
+    request_id: str,
+    transcript_result,
+    fill_nearest=False,
+):
     transcript_segments = transcript_result["segments"]
     for seg in transcript_segments:
         # assign speaker to segment (if any)
@@ -74,22 +95,38 @@ def assign_speakers(diarize_df, transcript_result, fill_nearest=False):
             )
             seg["speaker"] = speaker
 
-        #assign speaker to words.
-        if 'words' in seg:
-            for word in seg['words']:
-                if 'start' in word:
-                    diarize_df['intersection'] = np.minimum(diarize_df['end'], word['end']) - np.maximum(diarize_df['start'], word['start'])
-                    diarize_df['union'] = np.maximum(diarize_df['end'], word['end']) - np.minimum(diarize_df['start'], word['start'])
+        # assign speaker to words.
+        if "words" in seg:
+            for word in seg["words"]:
+                if "start" in word:
+                    diarize_df["intersection"] = np.minimum(
+                        diarize_df["end"], word["end"]
+                    ) - np.maximum(diarize_df["start"], word["start"])
+                    diarize_df["union"] = np.maximum(
+                        diarize_df["end"], word["end"]
+                    ) - np.minimum(diarize_df["start"], word["start"])
                     # remove no hit
                     if not fill_nearest:
-                        dia_tmp = diarize_df[diarize_df['intersection'] > 0]
+                        dia_tmp = diarize_df[diarize_df["intersection"] > 0]
                     else:
                         dia_tmp = diarize_df
                     if len(dia_tmp) > 0:
                         # sum over speakers
-                        speaker = dia_tmp.groupby("speaker")["intersection"].sum().sort_values(ascending=False).index[0]
+                        speaker = (
+                            dia_tmp.groupby("speaker")["intersection"]
+                            .sum()
+                            .sort_values(ascending=False)
+                            .index[0]
+                        )
                         word["speaker"] = speaker
-                if 'speaker' not in word:
+                if "speaker" not in word:
                     word["speaker"] = seg["speaker"]
-                    
+    update_job_history(request_id, {"status": response_codes.DIARIZATION_COMPLETED})
+    notify(
+        consumer,
+        {
+            "id": request_id,
+            "status": response_codes.DIARIZATION_COMPLETED,
+        },
+    )
     return transcript_result

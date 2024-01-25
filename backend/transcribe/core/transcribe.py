@@ -12,6 +12,7 @@ from django.conf import settings
 from ..constants import response_codes
 from .utils.commons import notify
 import logging
+from ..core.utils.db_utils import update_job_history
 
 
 class TranscriptionPipeline:
@@ -62,11 +63,14 @@ def transcribe_async(
     inference_options: TranscriptionInferenceOptions,
     result: TranscriptionResult,
 ) -> dict:
+    update_job_history(
+        request_id, {"status": response_codes.TRANSCRIPT_GENERATION_IN_PROGRESS}
+    )
     logger = logging.getLogger(__name__)
     audio_metadata = fetch_audio_metadata(inference_options.audio)
-    start_time = time.time()
     segment_collector_list = []
     for segment in result.segments:
+        segment_start_time = time.time()
         logger.debug(f"Segment received: {segment}")
         segment_dict = deserialize_segment(segment).to_dict()
         logger.debug(f"Deserialized segment: {str(segment_dict)}")
@@ -75,15 +79,26 @@ def transcribe_async(
             % (segment_dict["start"], segment_dict["end"], segment_dict["text"])
         )
         segment_collector_list.append(segment_dict)
-
-        if time.time() - start_time > 0:
-            notify(
-                consumer,
-                {
-                    "id": request_id,
-                    "status": response_codes.TRANSCRIPTION_IN_PROGRESS,
-                    "progress": round((segment.end / audio_metadata["duration"]) * 100),
-                    "estimatedTime": "",
-                },
-            )
+        progress = round((segment.end / audio_metadata["duration"]) * 100)
+        notify(
+            consumer,
+            {
+                "id": request_id,
+                "status": response_codes.TRANSCRIPT_GENERATION_IN_PROGRESS,
+                "progress": progress,
+                "estimatedTime": "",
+            },
+        )
+    update_job_history(
+        request_id, {"status": response_codes.TRANSCRIPT_GENERATION_COMPLETED}
+    )
+    notify(
+        consumer,
+        {
+            "id": request_id,
+            "status": response_codes.TRANSCRIPT_GENERATION_COMPLETED,
+            "progress": 100,
+            "estimatedTime": "",
+        },
+    )
     return {"segments": segment_collector_list}

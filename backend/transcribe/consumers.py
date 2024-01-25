@@ -1,4 +1,5 @@
 import json
+import time
 from channels.generic.websocket import WebsocketConsumer
 from .core.transcribe import TranscriptionPipeline, transcribe_async
 from .core.utils.writer_utils import get_writers
@@ -14,6 +15,9 @@ from .constants import response_codes
 from .core.diarize import DiarizationPipeline, assign_speakers
 import pickle
 import logging
+from .models import TranscriptionJobHistory
+from .core.utils.db_utils import create_job_history, update_job_history
+
 
 class TranscribeConsumer(WebsocketConsumer):
     def connect(self):
@@ -42,29 +46,19 @@ class TranscribeConsumer(WebsocketConsumer):
             )
             # Initialize
             request_id = generate_request_id()
+            create_job_history(request_id)
             notify(
                 self,
                 {
                     "id": request_id,
-                    "status": response_codes.TRANSCRIPTION_INITIALIZING,
+                    "status": response_codes.TRANSCRIPTION_JOB_INITIALIZED,
                 },
             )
             # Transcribe
             transcription_output = self.transcribe(request_id, request)
-            notify(
-                self,
-                {"id": request_id, "status": response_codes.TRANSCRIPTION_COMPLETED},
-            )
             # Diarize
             if request.diarization_options.enabled == True:
-                transcription_result = self.diarize(request, transcription_output)
-                notify(
-                    self,
-                    {
-                        "id": request_id,
-                        "status": response_codes.DIARIZATION_COMPLETED,
-                    },
-                )
+                transcription_result = self.diarize(request_id, request, transcription_output)
             else:
                 transcription_result = transcription_output
             # Export
@@ -72,14 +66,31 @@ class TranscribeConsumer(WebsocketConsumer):
                 transcription_result,
                 request.output_options,
             )
-
-        except Exception as e:
-            logger.error("Failure occured: ", e)
+            update_job_history(
+                request_id,
+                {
+                    "status": response_codes.TRANSCRIPTION_JOB_COMPLETED,
+                    "endDate": json.dumps(time.time()),
+                },
+            )
             notify(
                 self,
                 {
                     "id": request_id,
-                    "status": response_codes.TRANSCRIPTION_FAILED,
+                    "status": response_codes.TRANSCRIPTION_JOB_COMPLETED,
+                },
+            )
+
+        except Exception as e:
+            logger.error("Failure occured: ", e)
+            update_job_history(
+                request_id, {"status": response_codes.TRANSCRIPTION_JOB_FAILED}
+            )
+            notify(
+                self,
+                {
+                    "id": request_id,
+                    "status": response_codes.TRANSCRIPTION_JOB_FAILED,
                     "errorMessage": str(e),
                 },
             )
@@ -89,13 +100,17 @@ class TranscribeConsumer(WebsocketConsumer):
         result = model(inference_options=request.inference_options)
         return transcribe_async(self, request_id, request.inference_options, result)
 
-    def diarize(self, request: TranscriptionRequest, transcription: dict) -> dict:
+    def diarize(
+        self, request_id: str, request: TranscriptionRequest, transcription: dict
+    ) -> dict:
         model = DiarizationPipeline(request.diarization_options)
         segments = model(
+            consumer=self,
+            request_id=request_id,
             audio=request.inference_options.audio,
             diarization_options=request.diarization_options,
         )
-        return assign_speakers(segments, transcription)
+        return assign_speakers(self, segments, request_id, transcription)
 
     def export_output(
         self,
