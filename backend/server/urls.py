@@ -17,5 +17,5 @@ Including another URLconf
 from django.urls import path, include
 
 urlpatterns = [
-    path("transcription/", include('transcribe.urls')),
+    path("transcripts/", include('transcribe.urls')),
 ]

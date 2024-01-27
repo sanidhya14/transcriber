@@ -1,22 +1,55 @@
-from ...models import TranscriptionJobHistory
+from ...models import TranscriptMetadata, Transcript
 from ...constants import response_codes
-import time
+from django.utils import timezone
 import json
 
-def create_job_history(request_id: str):
-    job_history = TranscriptionJobHistory(
+
+def create_transcript_metadata(request_id: str, params: dict):
+    transcript_metadata = TranscriptMetadata(
         transcriptionId=request_id,
-        runMode="Async",
+        title="Untitled",
+        sourceLanguage=params.get("sourceLanguage", "undefined"),
+        speakerMap={"speakerId": "undefined", "speakerName": "undefined"},
+        durationInSeconds=params.get("durationInSeconds", 0),
+        audioFormat=params.get("audioFormat", "undefined"),
+        createdTimestamp=timezone.now().strftime("%H:%M:%S"),
+        updatedTimestamp=timezone.now().strftime("%H:%M:%S"),
         status=response_codes.TRANSCRIPTION_JOB_INITIALIZED,
-        startDate=json.dumps(time.time()),
+        runMode="Async",
     )
-    job_history.save()
+    transcript_metadata.save()
 
 
-def update_job_history(request_id: str, params: dict):
-    job_history = TranscriptionJobHistory.objects.get(
+def update_transcript_metadata(request_id: str, params: dict):
+    transcript_metadata = TranscriptMetadata.objects.get(
+        transcriptionId=request_id,
+    )
+    for key, value in params.items():
+        setattr(transcript_metadata, key, value)
+    transcript_metadata.save()
+
+
+def create_transcript(request_id: str, params: dict):
+    transcript = Transcript(
+        transcriptionId=request_id,
+        startTimeInSeconds=params.get("startTimeInSeconds", 0.0),
+        transcriptSegment=params.get(
+            "transcriptSegment",
+            {
+                "speakerId": "",
+                "startTimeInSeconds": "",
+                "endTimeInSeconds": "",
+                "text": "",
+            },
+        ),
+    )
+    transcript.save()
+
+
+def update_transcript(request_id: str, params: dict):
+    transcript = Transcript.objects.get(
         transcriptionId=request_id,
     )
     for key, value in params.items():
         setattr(job_history, key, value)
-    job_history.save()
+    transcript.save()

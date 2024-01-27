@@ -9,9 +9,10 @@ import torch
 
 from .utils.audio import load_audio, SAMPLE_RATE
 from ..core.transcriptionModels import DiarizarionOptions
-from ..core.utils.db_utils import update_job_history
+from ..core.utils.db_utils import update_transcript_metadata
 from ..constants import response_codes
 from ..core.utils.commons import notify
+import logging
 
 class DiarizationPipeline:
     def __init__(
@@ -33,7 +34,7 @@ class DiarizationPipeline:
         audio: Union[str, np.ndarray],
         diarization_options: DiarizarionOptions,
     ):
-        update_job_history(
+        update_transcript_metadata(
             request_id, {"status": response_codes.DIARIZATION_IN_PROGRESS}
         )
         notify(
@@ -62,8 +63,7 @@ class DiarizationPipeline:
         diarize_df["start"] = diarize_df["segment"].apply(lambda x: x.start)
         diarize_df["end"] = diarize_df["segment"].apply(lambda x: x.end)
         return diarize_df
-
-
+    
 def assign_speakers(
     consumer: WebsocketConsumer,
     diarize_df,
@@ -71,6 +71,7 @@ def assign_speakers(
     transcript_result,
     fill_nearest=False,
 ):
+    logger = logging.getLogger(__name__)
     transcript_segments = transcript_result["segments"]
     for seg in transcript_segments:
         # assign speaker to segment (if any)
@@ -121,7 +122,9 @@ def assign_speakers(
                         word["speaker"] = speaker
                 if "speaker" not in word:
                     word["speaker"] = seg["speaker"]
-    update_job_history(request_id, {"status": response_codes.DIARIZATION_COMPLETED})
+
+    logger.info(f"Transcription result after diarization is: {transcript_result}")
+    update_transcript_metadata(request_id, {"status": response_codes.DIARIZATION_COMPLETED})
     notify(
         consumer,
         {

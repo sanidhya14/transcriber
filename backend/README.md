@@ -73,6 +73,8 @@ pip3 install -r requirements/base.txt
 3. Run Server
 
 ```
+python3 manage.py makemigrations transcribe
+python3 manage.py migrate transcribe
 python3 manage.py runserver
 ```
 

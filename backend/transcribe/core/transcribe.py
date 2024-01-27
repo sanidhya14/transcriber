@@ -12,7 +12,7 @@ from django.conf import settings
 from ..constants import response_codes
 from .utils.commons import notify
 import logging
-from ..core.utils.db_utils import update_job_history
+from ..core.utils.db_utils import update_transcript_metadata
 
 
 class TranscriptionPipeline:
@@ -63,7 +63,7 @@ def transcribe_async(
     inference_options: TranscriptionInferenceOptions,
     result: TranscriptionResult,
 ) -> dict:
-    update_job_history(
+    update_transcript_metadata(
         request_id, {"status": response_codes.TRANSCRIPT_GENERATION_IN_PROGRESS}
     )
     logger = logging.getLogger(__name__)
@@ -73,8 +73,8 @@ def transcribe_async(
         segment_start_time = time.time()
         logger.debug(f"Segment received: {segment}")
         segment_dict = deserialize_segment(segment).to_dict()
-        logger.debug(f"Deserialized segment: {str(segment_dict)}")
-        logger.info(
+        logger.info(f"Deserialized segment: {str(segment_dict)}" + "\n")
+        logger.debug(
             "Text: [%.2fs -> %.2fs] %s"
             % (segment_dict["start"], segment_dict["end"], segment_dict["text"])
         )
@@ -89,7 +89,7 @@ def transcribe_async(
                 "estimatedTime": "",
             },
         )
-    update_job_history(
+    update_transcript_metadata(
         request_id, {"status": response_codes.TRANSCRIPT_GENERATION_COMPLETED}
     )
     notify(

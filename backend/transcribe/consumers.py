@@ -15,11 +15,16 @@ from .constants import response_codes
 from .core.diarize import DiarizationPipeline, assign_speakers
 import pickle
 import logging
-from .models import TranscriptionJobHistory
-from .core.utils.db_utils import create_job_history, update_job_history
+from .models import TranscriptMetadata
+from .core.utils.db_utils import (
+    create_transcript_metadata,
+    update_transcript_metadata,
+    create_transcript,
+)
 
 
 class TranscribeConsumer(WebsocketConsumer):
+
     def connect(self):
         self.accept()
 
@@ -44,9 +49,12 @@ class TranscribeConsumer(WebsocketConsumer):
                     **input_data["diarization_options"]
                 ),
             )
+
             # Initialize
             request_id = generate_request_id()
-            create_job_history(request_id)
+            create_transcript_metadata(
+                request_id, {"sourceLanguage": request.inference_options.language}
+            )
             notify(
                 self,
                 {
@@ -54,24 +62,21 @@ class TranscribeConsumer(WebsocketConsumer):
                     "status": response_codes.TRANSCRIPTION_JOB_INITIALIZED,
                 },
             )
+
             # Transcribe
             transcription_output = self.transcribe(request_id, request)
+
             # Diarize
             if request.diarization_options.enabled == True:
-                transcription_result = self.diarize(request_id, request, transcription_output)
+                transcription_result = self.diarize(
+                    request_id, request, transcription_output
+                )
             else:
                 transcription_result = transcription_output
-            # Export
-            self.export_output(
-                transcription_result,
-                request.output_options,
-            )
-            update_job_history(
-                request_id,
-                {
-                    "status": response_codes.TRANSCRIPTION_JOB_COMPLETED,
-                    "endDate": json.dumps(time.time()),
-                },
+
+            # Store results in DB
+            self.persist_results_in_db(
+                request_id=request_id, result=transcription_result
             )
             notify(
                 self,
@@ -81,9 +86,23 @@ class TranscribeConsumer(WebsocketConsumer):
                 },
             )
 
+            # Export results
+            self.export_output(
+                request_id=request_id,
+                result=transcription_result,
+                output_options=request.output_options,
+            )
+            notify(
+                self,
+                {
+                    "id": request_id,
+                    "status": response_codes.TRANSCRIPTION_JOB_OUTPUT_EXPORT_COMPLETED,
+                },
+            )
+
         except Exception as e:
             logger.error("Failure occured: ", e)
-            update_job_history(
+            update_transcript_metadata(
                 request_id, {"status": response_codes.TRANSCRIPTION_JOB_FAILED}
             )
             notify(
@@ -112,8 +131,37 @@ class TranscribeConsumer(WebsocketConsumer):
         )
         return assign_speakers(self, segments, request_id, transcription)
 
+    def persist_results_in_db(self, request_id: str, result: dict):
+        speakerMap = {}
+        for segment in result["segments"]:
+            childSpeakerMap = {}
+            childSpeakerMap["speakerId"] = segment["speaker"]
+            childSpeakerMap["speakerName"] = segment["speaker"]
+            create_transcript(
+                request_id=request_id,
+                params={
+                    "startTimeInSeconds": float(segment["start"]),
+                    "transcriptSegment": {
+                        "speakerId": segment["speaker"],
+                        "startTimeInSeconds": segment["start"],
+                        "endTimeInSeconds": segment["end"],
+                        "text": segment["text"],
+                    },
+                },
+            )
+            speakerMap[childSpeakerMap["speakerId"]] = childSpeakerMap
+
+        update_transcript_metadata(
+            request_id=request_id,
+            params={
+                "speakerMap": speakerMap,
+                "status": response_codes.TRANSCRIPTION_JOB_COMPLETED,
+            },
+        )
+
     def export_output(
         self,
+        request_id: str,
         result: dict,
         output_options: TransciptionOutputOptions,
     ):
