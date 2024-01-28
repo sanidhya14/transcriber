@@ -7,10 +7,9 @@ from pyannote.audio import Pipeline
 from typing import Optional, Union
 import torch
 
-from .utils.audio import load_audio, SAMPLE_RATE
 from ..core.transcriptionModels import DiarizarionOptions
 from ..core.utils.db_utils import update_transcript_metadata
-from ..constants import response_codes
+from ..constants import response_codes, commons
 import logging
 
 
@@ -31,14 +30,12 @@ class DiarizationPipeline:
         self,
         consumer: WebsocketConsumer,
         request_id: str,
-        audio: Union[str, np.ndarray],
+        audio: Union[np.ndarray],
         diarization_options: DiarizarionOptions,
     ):
-        if isinstance(audio, str):
-            audio = load_audio(audio)
         audio_data = {
             "waveform": torch.from_numpy(audio[None, :]),
-            "sample_rate": SAMPLE_RATE,
+            "sample_rate": commons.SAMPLING_RATE,
         }
         segments = self.model(
             audio_data,

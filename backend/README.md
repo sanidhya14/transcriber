@@ -3,8 +3,8 @@
 This is the Django hosted backend for the application.
 
 ## TODO
-- [ ] Perform VAD filtering before diarization
-- [ ] Manage audio loading & processing only once for each transcription job
+- [x] Perform VAD filtering before diarization
+- [x] Manage audio loading & processing only once for each transcription job
 - [ ] Maintain new API for model/dependency management
 - [ ] Revisit default values set for inference
 - [ ] Add tests for APIs

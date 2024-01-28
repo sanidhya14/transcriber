@@ -6,12 +6,13 @@ from .transcriptionModels import (
     FasterWhisperModelOptions,
     deserialize_segment,
 )
-from .utils.audio import fetch_audio_metadata
 import time
 from django.conf import settings
 from ..constants import response_codes
 from .utils.commons import notify
 import logging
+from typing import BinaryIO, Union
+import numpy as np
 
 
 class TranscriptionPipeline:
@@ -31,10 +32,10 @@ class TranscriptionPipeline:
         )
 
     def __call__(
-        self, inference_options: TranscriptionInferenceOptions
+        self, audio: Union[np.ndarray], inference_options: TranscriptionInferenceOptions
     ) -> TranscriptionResult:
         segments, info = self.model.transcribe(
-            inference_options.audio,
+            audio=audio,
             language=inference_options.language,
             task=inference_options.task,
             best_of=inference_options.best_of,
@@ -50,8 +51,7 @@ class TranscriptionPipeline:
             word_timestamps=inference_options.word_timestamps,
             prepend_punctuations=inference_options.prepend_punctuations,
             append_punctuations=inference_options.append_punctuations,
-            vad_filter=inference_options.vad_filter,
-            vad_parameters=inference_options.vad_parameters,
+            vad_filter=False, # VAD filtering is self managed
         )
         return TranscriptionResult(segments=segments, info=info)
 
@@ -59,12 +59,11 @@ class TranscriptionPipeline:
 def transcribe_segment(
     consumer: WebsocketConsumer,
     request_id: str,
+    audio_metadata: dict,
     inference_options: TranscriptionInferenceOptions,
     segment,
 ) -> dict:
     logger = logging.getLogger(__name__)
-    audio_metadata = fetch_audio_metadata(inference_options.audio)
-
     segment_start_time = time.time()
     logger.debug(f"Segment received: {segment}")
     segment_dict = deserialize_segment(segment).to_dict()

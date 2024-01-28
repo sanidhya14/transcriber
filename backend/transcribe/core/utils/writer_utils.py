@@ -145,7 +145,7 @@ class SubtitlesWriter(ResultWriter):
             for segment in result["segments"]:
                 for i, original_timing in enumerate(segment["words"]):
                     timing = original_timing.copy()
-                    print("Timing being copied: " + str(timing) + "\n")
+                    # print("Timing being copied: " + str(timing) + "\n")
                     long_pause = not preserve_segments and timing["start"] - last > 3.0
                     has_room = line_len + len(timing["word"]) <= max_line_width
                     seg_break = i == 0 and len(subtitle) > 0 and preserve_segments
