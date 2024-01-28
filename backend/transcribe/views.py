@@ -51,7 +51,7 @@ def export_transcripts(request):
 
 def get_transcript_page(request, transcriptionId):
     try:
-        lastFetchedRecordId = float(request.GET.get("lastFetchedRecordId", None))
+        lastFetchedRecordId = float(request.GET.get("lastFetchedRecordId", 0.0))
         pageSize = int(request.GET.get("pageSize", 10000))
 
         sort_order = ["transcriptionId", "startTimeInSeconds"]

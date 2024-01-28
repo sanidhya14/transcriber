@@ -6,6 +6,7 @@ This is the Django hosted backend for the application.
 - [ ] Perform VAD filtering before diarization
 - [ ] Manage audio loading & processing only once for each transcription job
 - [ ] Maintain new API for model/dependency management
+- [ ] Revisit default values set for inference
 - [ ] Add tests for APIs
 - [ ] Update notifications for transcription & diarization statuses (per audio chunk processing [30s for transcription])
 - [ ] Fix for slow diarization (see bug fix required)

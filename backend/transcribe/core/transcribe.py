@@ -12,7 +12,6 @@ from django.conf import settings
 from ..constants import response_codes
 from .utils.commons import notify
 import logging
-from ..core.utils.db_utils import update_transcript_metadata
 
 
 class TranscriptionPipeline:
@@ -57,48 +56,31 @@ class TranscriptionPipeline:
         return TranscriptionResult(segments=segments, info=info)
 
 
-def transcribe_async(
+def transcribe_segment(
     consumer: WebsocketConsumer,
     request_id: str,
     inference_options: TranscriptionInferenceOptions,
-    result: TranscriptionResult,
+    segment,
 ) -> dict:
-    update_transcript_metadata(
-        request_id, {"status": response_codes.TRANSCRIPT_GENERATION_IN_PROGRESS}
-    )
     logger = logging.getLogger(__name__)
     audio_metadata = fetch_audio_metadata(inference_options.audio)
-    segment_collector_list = []
-    for segment in result.segments:
-        segment_start_time = time.time()
-        logger.debug(f"Segment received: {segment}")
-        segment_dict = deserialize_segment(segment).to_dict()
-        logger.info(f"Deserialized segment: {str(segment_dict)}" + "\n")
-        logger.debug(
-            "Text: [%.2fs -> %.2fs] %s"
-            % (segment_dict["start"], segment_dict["end"], segment_dict["text"])
-        )
-        segment_collector_list.append(segment_dict)
-        progress = round((segment.end / audio_metadata["duration"]) * 100)
-        notify(
-            consumer,
-            {
-                "id": request_id,
-                "status": response_codes.TRANSCRIPT_GENERATION_IN_PROGRESS,
-                "progress": progress,
-                "estimatedTime": "",
-            },
-        )
-    update_transcript_metadata(
-        request_id, {"status": response_codes.TRANSCRIPT_GENERATION_COMPLETED}
+
+    segment_start_time = time.time()
+    logger.debug(f"Segment received: {segment}")
+    segment_dict = deserialize_segment(segment).to_dict()
+    logger.info(f"Deserialized segment: {str(segment_dict)}" + "\n")
+    logger.debug(
+        "Pretty Text: [%.2fs -> %.2fs] %s"
+        % (segment_dict["start"], segment_dict["end"], segment_dict["text"])
     )
+    progress = round((segment.end / audio_metadata["duration"]) * 100)
     notify(
         consumer,
         {
             "id": request_id,
-            "status": response_codes.TRANSCRIPT_GENERATION_COMPLETED,
-            "progress": 100,
+            "status": response_codes.TRANSCRIPT_GENERATION_IN_PROGRESS,
+            "progress": progress,
             "estimatedTime": "",
         },
     )
-    return {"segments": segment_collector_list}
+    return segment_dict
