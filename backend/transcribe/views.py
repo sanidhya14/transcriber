@@ -3,6 +3,8 @@ from django.http import JsonResponse
 import json
 from django.core.serializers import serialize
 import logging
+from .core.utils.db_utils import update_transcript_metadata, update_transcript_segment
+from .core.utils.writer_utils import get_writers
 
 logger = logging.getLogger(__name__)
 
@@ -45,8 +47,29 @@ def delete_transcripts(request):
         return JsonResponse({"status": "FAILED", "errorMessage": errorMessage})
 
 
+# TEST THIS API
 def export_transcripts(request):
-    return null
+    try:
+        json_data = json.loads(request.body.decode("utf-8"))
+        transcriptionIdList = json_data.get("transcriptionIds")
+        outputOptions = json_data.get("outputOptions")
+
+        for transcriptionId in transcriptionIdList:
+            writer = get_writers(
+                output_dir=outputOptions.output_dir,
+                output_formats=outputOptions.output_formats,
+            )
+            writer(
+                result,
+                outputOptions.output_file_name,
+                outputOptions._asdict(),
+            )
+            logger.debug(f"Successfully exported Transcript {transcriptionId}")
+        return JsonResponse({"status": "SUCCESS"})
+    except Exception as e:
+        errorMessage = f"Failed to export transcripts due to: {str(e)}"
+        logger.error(errorMessage)
+        return JsonResponse({"status": "FAILED", "errorMessage": errorMessage})
 
 
 def get_transcript_page(request, transcriptionId):
@@ -75,12 +98,32 @@ def get_transcript_page(request, transcriptionId):
         return JsonResponse({"status": "FAILED", "errorMessage": errorMessage})
 
 
+# TEST THIS API
 def update_transcript(request):
-    return null
+    try:
+        json_data = json.loads(request.body.decode("utf-8"))
+        transcriptionId = json_data.get("transcriptionId")
+        transcriptMetadataUpdateParams = json_data.get("metadata")
+        transcriptSegmentUpdateParams = json_data.get("segments")
+
+        update_transcript_metadata(transcriptionId, transcriptMetadataUpdateParams)
+        logger.debug("Successfully updated TranscriptMetadata")
+
+        for segment in transcriptSegments:
+            update_transcript_segment(transcriptionId, segment)
+            logger.debug(
+                f"Successfully updated TranscriptSegment with start timestamp {segment['startTimeInSecond']}"
+            )
+
+        return JsonResponse({"status": "SUCCESS"})
+    except Exception as e:
+        errorMessage = f"Failed to update transcript due to: {str(e)}"
+        logger.error(errorMessage)
+        return JsonResponse({"status": "FAILED", "errorMessage": errorMessage})
+
 
 # Not for Production
 def reset_db(request):
     TranscriptMetadata.objects.all().delete()
     TranscriptSegment.objects.all().delete()
     return JsonResponse({"status": "SUCCESS"})
-

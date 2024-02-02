@@ -12,6 +12,9 @@ This is the Django hosted backend for the application.
 - [ ] Fix for slow diarization (see bug fix required)
 - [ ] Handle multiple media formats (audio & video)
 - [x] Fix file write exports
+- [ ] Test Export API
+- [ ] Test update transcript API
+- [ ] Add request/response models for rest CRUD APIs
 
 ## Project structure: [Remove once setup]
 
