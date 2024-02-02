@@ -19,7 +19,7 @@ from .models import TranscriptMetadata
 from .core.utils.db_utils import (
     create_transcript_metadata,
     update_transcript_metadata,
-    create_transcript,
+    create_transcript_segment,
 )
 from .core.audio import decode_audio
 from .core.vad import (
@@ -294,7 +294,7 @@ class TranscribeConsumer(WebsocketConsumer):
             childSpeakerMap = {}
             childSpeakerMap["speakerId"] = segment["speaker"]
             childSpeakerMap["speakerName"] = segment["speaker"]
-            create_transcript(
+            create_transcript_segment(
                 request_id=request_id,
                 params={
                     "startTimeInSeconds": float(segment["start"]),

@@ -74,7 +74,7 @@ def validate_transcript_segments(value):
         raise ValidationError("Values of keys in Transcript Segment must be strings.")
 
 
-class Transcript(models.Model):
+class TranscriptSegment(models.Model):
     transcriptionId = models.CharField(max_length=255)
     startTimeInSeconds = models.FloatField()
     transcriptSegment = models.JSONField(

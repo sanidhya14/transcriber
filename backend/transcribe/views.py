@@ -1,4 +1,4 @@
-from .models import TranscriptMetadata, Transcript
+from .models import TranscriptMetadata, TranscriptSegment
 from django.http import JsonResponse
 import json
 from django.core.serializers import serialize
@@ -36,8 +36,8 @@ def delete_transcripts(request):
         transcriptionIds = json_data.get("transcriptionIds")
         TranscriptMetadata.objects.filter(transcriptionId__in=transcriptionIds).delete()
         logger.debug("Successfully deleted objects from TranscriptMetadata")
-        Transcript.objects.filter(transcriptionId__in=transcriptionIds).delete()
-        logger.debug("Successfully deleted objects from Transcript")
+        TranscriptSegment.objects.filter(transcriptionId__in=transcriptionIds).delete()
+        logger.debug("Successfully deleted objects from TranscriptSegment")
         return JsonResponse({"status": "SUCCESS"})
     except Exception as e:
         errorMessage = f"Failed to delete transcripts due to: {str(e)}"
@@ -81,6 +81,6 @@ def update_transcript(request):
 # Not for Production
 def reset_db(request):
     TranscriptMetadata.objects.all().delete()
-    Transcript.objects.all().delete()
+    TranscriptSegment.objects.all().delete()
     return JsonResponse({"status": "SUCCESS"})
 
