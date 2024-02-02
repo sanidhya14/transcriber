@@ -1,22 +1,18 @@
-// chakra imports
 import { Box, Flex, Stack } from "@chakra-ui/react";
-//   Custom components
-import Brand from "components/sidebar/components/Brand";
+import React from "react";
 import Links from "components/sidebar/components/Links";
 import SidebarCard from "components/sidebar/components/SidebarCard";
-import React from "react";
-
-// FUNCTIONS
 
 function SidebarContent(props) {
-  const { routes } = props;
-  // SIDEBAR
+
+  const { routes, isExpanded } = props;
+
   return (
-    <Flex direction='column' height='100%' pt='25px' px="16px" borderRadius='30px'>
-      <Brand />
+    <Flex direction='column' height='100vh' pt='25px' px="16px" borderRadius='30px'>
+
       <Stack direction='column' mb='auto' mt='8px'>
-        <Box ps='20px' pe={{ md: "16px", "2xl": "1px" }}>
-          <Links routes={routes} />
+        <Box>
+          <Links routes={routes} isExpanded={isExpanded} />
         </Box>
       </Stack>
 
@@ -24,7 +20,9 @@ function SidebarContent(props) {
         mt='60px'
         mb='40px'
         borderRadius='30px'>
-        <SidebarCard />
+        <SidebarCard
+          isExpanded={isExpanded}
+        />
       </Box>
     </Flex>
   );

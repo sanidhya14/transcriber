@@ -29,7 +29,7 @@
     "react-calendar": "^3.7.0",
     "react-custom-scrollbars-2": "^4.2.1",
     "react-dom": "17.0.2",
-    "react-dropzone": "^12.0.4",
+    "react-dropzone": "^14.2.3",
     "react-icons": "^4.3.1",
     "react-is": "^18.0.0",
     "react-router-dom": "^5.3.0",
@@ -39,7 +39,12 @@
     "stylis-plugin-rtl": "2.0.2",
     "web-vitals": "^1.1.2",
     "electron": "26.0.0",
-    "electron-is-dev": "2.0.0"
+    "electron-is-dev": "2.0.0",
+    "react-circle-progress-bar": "0.1.4",
+    "prettier": "3.0.3",
+    "path-browserify": "1.0.1",
+    "fs": "0.0.1-security",
+    "moment": "2.29.4"
   },
   "scripts": {
     "start": "electron main.js",
@@ -49,7 +54,8 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "sitemap": "babel-node ./sitemap-builder.js"
+    "sitemap": "babel-node ./sitemap-builder.js",
+    "format": "prettier --write \"src/**/*.js\" \"src/**/*.jsx\""
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
