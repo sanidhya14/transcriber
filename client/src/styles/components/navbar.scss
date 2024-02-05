@@ -1,0 +1,129 @@
+/* src/styles/navbar.css */
+
+.navbar-container {
+    position: fixed;
+    min-width: 100%;
+    width: 100vh;
+    height: 8vh;
+    min-height: 8%;
+    background-color: $defaultLightBackground;
+}
+
+.navbar-inner {
+    display: flex;
+    align-items: center;
+    min-width: 100%;
+    margin: 10px;
+    padding: 5px;
+}
+
+.menu-button-container {
+    padding: 8px;
+    margin-left: 10px;
+    border-radius: 50px;
+    margin-right: 10px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: $defaultShadow;
+    }
+}
+
+.menu-button-icon {
+    width: 30px;
+    height: 30px;
+    color: $defaultDarkPrimary;
+}
+
+.brand-container {
+    display: flex;
+    width: 100px;
+    height: 100px;
+    align-items: center;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.brand-logo {
+    max-height: 90px;
+}
+
+.theme-button-container {
+    padding: 8px;
+    border-radius: 50px;
+    margin-right: 20px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: $defaultShadow;
+    }
+}
+
+.theme-button-sun {
+    height: 30px;
+    width: 30px;
+    color: $defaultDarkPrimary;
+}
+
+.theme-button-moon {
+    height: 30px;
+    width: 30px;
+    color: $defaultDarkPrimary;
+}
+
+.notifications-container {
+    padding: 8px;
+    border-radius: 50px;
+    margin-right: 20px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: $defaultShadow;
+    }
+}
+.notifications-button {
+    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    color: $defaultDarkPrimary;
+}
+
+.notification-item-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 5px;
+    margin-right: 8px;
+}
+
+.notification-text {
+    font-family: $defaultFontFamily;
+    font-weight: $fontWeightRegular;
+}
+
+.profile-button-container {
+    padding: 8px;
+    border-radius: 50px;
+    margin-right: 20px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: $defaultShadow;
+    }
+}
+
+.profile-menu-button {
+    height: 30px;
+    width: 30px;
+    color: $defaultDarkPrimary;
+}
+
+.profile-list-icon {
+    height: 30px;
+    width: 30px;
+    color: $defaultDarkOutline;
+}
+
+.profile-list-text {
+    font-family: $defaultFontFamily;
+    font-weight: $fontWeightRegular;
+}

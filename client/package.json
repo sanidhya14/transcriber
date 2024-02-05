@@ -44,7 +44,8 @@
     "prettier": "3.0.3",
     "path-browserify": "1.0.1",
     "fs": "0.0.1-security",
-    "moment": "2.29.4"
+    "moment": "2.29.4",
+    "sass": "1.70.0"
   },
   "scripts": {
     "start": "electron main.js",

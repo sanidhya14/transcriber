@@ -1,0 +1,76 @@
+/************************    ALL AVAILABLE VALUES, REDUCE THIS SET ONCE BUILT    ******************************/
+// Font Families
+$fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+// Font Weights
+$fontWeightRegular: 400;
+$fontWeightBold: 700;
+
+// Font Sizes
+$fontSizeSmall: 14px;
+$fontSizeRegular: 16px;
+$fontSizeMedium: 18px;
+$fontSizeLarge: 20px;
+$fontSizeExtraLarge: 24px;
+
+// Line Heights
+$lineHeightRegular: 1.5;
+
+// Colors
+// Whites
+$white: #ffffff;
+$lightestGray: #f8f8f8;
+$lighterGray: #f0f0f0;
+$lightGray: #e5e5e5;
+$mediumGray: #d0d0d0;
+
+// Blacks
+$black: #000000;
+$darkGray: #333333;
+$darkerGray: #1a1a1a;
+
+// Shades of Grey
+
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #868e96;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+
+// Highlight Colors
+// Blue
+$blue: #0070c9;
+$lightBlue: #3298dc;
+$darkBlue: #004080;
+
+// Orange
+$orange: #ff3b30;
+$darkOrange: #d63525;
+$darkerOrange: #8f2119;
+
+// Green
+$green: #4cd964;
+$darkGreen: #34a853;
+$darkerGreen: #228d65;
+
+// Red
+$red: #ff2d55;
+$darkRed: #d82e2e;
+$darkerRed: #a2191f;
+
+/************************    APP DEFAULTS IN USE    ******************************/
+
+/* Font */
+$defaultFontFamily: $fontFamily;
+
+/* Light Shades */
+$defaultLightBackground: $white;
+
+/* Dark Shades */
+$defaultShadow: $lightGray;
+$defaultDarkPrimary: $gray-700;
+$defaultDarkOutline: $gray-600;
