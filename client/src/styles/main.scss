@@ -1,3 +1,8 @@
 @import 'variables';
 
-@import './components/navbar.scss'
+@import './components/navbar.scss';
+
+@import './components/sidebar/content.scss';
+@import './components/sidebar/links.scss';
+@import './components/sidebar/card.scss';
+@import './components/sidebar/sidebar.scss';

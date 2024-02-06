@@ -8,18 +8,15 @@ function SidebarContent(props) {
   const { routes, isExpanded } = props;
 
   return (
-    <Flex direction='column' height='100vh' pt='25px' px="16px" borderRadius='30px'>
+    <Flex className="sidebar-content">
 
-      <Stack direction='column' mb='auto' mt='8px'>
+      <Stack className="stack-container">
         <Box>
           <Links routes={routes} isExpanded={isExpanded} />
         </Box>
       </Stack>
 
-      <Box
-        mt='60px'
-        mb='40px'
-        borderRadius='30px'>
+      <Box className="sidebar-card-box">
         <SidebarCard
           isExpanded={isExpanded}
         />

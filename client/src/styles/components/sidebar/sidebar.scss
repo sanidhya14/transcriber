@@ -1,0 +1,25 @@
+.sidebar-flex-container {
+    display: block;
+    position: relative;
+    min-height: 100vh;
+    margin-top: 8vh;
+}
+
+.sidebar-inner-flex {
+    background-color: white;
+    transition: 0.15s ease-out;
+    width: 10vh; /* Default width */
+    height: 100vh;
+    margin: 0;
+    min-height: 100%;
+    overflow-x: hidden;
+    box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
+}
+
+/** MAKRE SIDE BAR RESPONSIVE AS HERE **/
+
+@media (min-width: 48em) and (min-width: 80em) {
+    .sidebar-flex-container {
+        display: block;
+    }
+}

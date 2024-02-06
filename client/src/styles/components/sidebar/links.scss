@@ -1,0 +1,60 @@
+.sidebar-links {
+    // Add global styles for sidebar links container if needed
+  }
+  
+  .menu-category {
+    font-size: md;
+    font-weight: bold;
+    margin-left: auto;
+    padding-left: 10px; 
+    padding-right: 16px;
+    padding-top: 18px;
+    padding-bottom: 12px;
+  }
+  
+  .menu-item {
+    color: $defaultDarkOutline;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-left: 5px;
+  }
+
+  .menu-item-active {
+    color: $defaultHighlight;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-left: 5px;
+  }
+  
+  .menu-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+  }
+
+  .menu-item-text {
+    color: $defaultDarkOutline;
+    margin-left: 4px;
+    font-weight: 100;
+  }
+  
+  .menu-item-text-active {
+    color: $defaultHighlight;
+    margin-left: 4px;
+    font-weight: 200;
+  }
+  
+  .side-marker {
+    color: $defaultDarkOutline;
+    height: 36px;
+    width: 4px;
+    border-radius: 5px;
+  }
+
+  .side-marker-active {
+    background-color: $defaultHighlight;
+    height: 36px;
+    width: 4px;
+    border-radius: 5px;
+  }
+  
