@@ -16,7 +16,7 @@ function Sidebar(props) {
   const { routes, isExpanded } = props;
 
   const getSideBarWidth = () => {
-    return isExpanded === true ? "30vh" : "10vh";
+    return isExpanded === true ? "33vh" : "10vh";
   }
 
   return (

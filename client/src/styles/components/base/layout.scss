@@ -1,0 +1,12 @@
+// Main page content conatiner
+.page-container {
+    padding-top: 120px; // For small screens
+    @media (min-width: 768px) {
+        padding-top: 80px; // For medium screens
+    }
+    @media (min-width: 1200px) {
+        padding-top: 70px; // For extra-large screens
+    }
+    height: 100vh;
+    background-color: $appBackgroundColor;
+}

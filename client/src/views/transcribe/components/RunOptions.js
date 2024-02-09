@@ -36,17 +36,23 @@ export default function RunOptions(props) {
     toggleWordLevelTimestamps,
   } = props;
 
+  /** PUT ACTUAL HIGHLIGHT COLOR */
+  const highlightColor = "pink";
+
   return (
-    <Box>
-      <Heading as="h2" size="md" mb={4}>
+    <Box className="run-options-container">
+      <Heading className="heading">
         Primary Options
       </Heading>
-      <FormControl>
-        <Flex>
-          <FormLabel>Audio Language</FormLabel>
-          <Spacer />
+      <FormControl className="form-control">
+        <Flex className="justifly-flex">
+          <FormLabel className="form-label" >Audio Language</FormLabel>
           <Select
-            w="150px"
+            className="select"
+            // Hack for now
+            w="20%"
+            variant="outline"
+            colorScheme={highlightColor}
             value={audioLanguage}
             onChange={(e) => handleAudioLanguageChange(e.target.value)}
           >
@@ -60,16 +66,17 @@ export default function RunOptions(props) {
           </Select>
         </Flex>
       </FormControl>
-      <FormControl>
-        <FormLabel>Transcription Mode</FormLabel>
+      <FormControl className="form-control">
+        <FormLabel className="form-label">Transcription Mode</FormLabel>
         <RadioGroup
+          className="radio-group"
           value={transcriptionMode}
           onChange={(e) => handleTranscriptionModeChange(e.value)}
         >
           <Stack spacing={2}>
             {Object.entries(TRANSCRIPTION_MODES).map(([key, value]) => {
               return (
-                <Radio key={key} value={key}>
+                <Radio key={key} value={key} className="radio" colorScheme={highlightColor}>
                   {value}
                 </Radio>
               );
@@ -78,13 +85,13 @@ export default function RunOptions(props) {
         </RadioGroup>
       </FormControl>
 
-      <Heading as="h2" size="md" mt={8} mb={4}>
+      <Heading className="heading">
         Export Options
       </Heading>
-      <FormControl>
-        <Flex>
-          <FormLabel>Output Location</FormLabel>
-          <Spacer />
+      <FormControl className="form-control">
+        <Flex className="flex-container">
+          <FormLabel className="form-label">Output Location</FormLabel>
+          <Spacer className="spacer" />
           <Flex>
             {/* <Button
               w="200px"
@@ -93,7 +100,7 @@ export default function RunOptions(props) {
             >
               Select Location
             </Button> */}
-            <Input
+            <Input className="input"
               isDisabled={false}
               value={outputLocation}
               onChange={(event) =>
@@ -103,12 +110,13 @@ export default function RunOptions(props) {
           </Flex>
         </Flex>
       </FormControl>
-      <FormControl>
-        <FormLabel>Output formats</FormLabel>
+      <FormControl className="form-control">
+        <FormLabel className="form-label">Output formats</FormLabel>
         <Stack spacing={2}>
           {Object.entries(EXPORT_FORMATS).map(([key, value]) => {
             return (
-              <Checkbox
+              <Checkbox className="checkbox"
+                colorScheme={highlightColor}
                 key={key}
                 isChecked={outputFormats.includes(key)}
                 onChange={() => handleOutputFormatsChange(key)}
@@ -120,24 +128,31 @@ export default function RunOptions(props) {
         </Stack>
       </FormControl>
 
-      <Heading as="h2" size="md" mt={8} mb={4}>
+      <Heading className="heading">
         Advanced Options
       </Heading>
-      <FormControl display="flex" justifyContent="space-between">
-        <FormLabel>Speaker Identification</FormLabel>
-        <Switch
-          isChecked={enableSpeakerIdentification}
-          onChange={() =>
-            toggleSpeakerIdentification(!enableSpeakerIdentification)
-          }
-        />
+      <FormControl className="form-control">
+        <Flex className="justifly-flex">
+          <FormLabel className="form-label">Speaker Identification</FormLabel>
+          <Switch className="switch"
+            colorScheme={highlightColor}
+            isChecked={enableSpeakerIdentification}
+            onChange={() =>
+              toggleSpeakerIdentification(!enableSpeakerIdentification)
+            }
+          />
+        </Flex>
+
       </FormControl>
-      <FormControl display="flex" justifyContent="space-between">
-        <FormLabel>Word Level Timestamps</FormLabel>
-        <Switch
-          isChecked={enableWordLevelTimestamps}
-          onChange={() => toggleWordLevelTimestamps(!enableWordLevelTimestamps)}
-        />
+      <FormControl className="form-control">
+        <Flex className="justifly-flex">
+          <FormLabel className="form-label">Word Level Timestamps</FormLabel>
+          <Switch className="switch"
+            colorScheme={highlightColor}
+            isChecked={enableWordLevelTimestamps}
+            onChange={() => toggleWordLevelTimestamps(!enableWordLevelTimestamps)}
+          />
+        </Flex>
       </FormControl>
     </Box>
   );

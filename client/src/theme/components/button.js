@@ -71,16 +71,22 @@ export const buttonStyles = {
           },
         }),
         action: (props) => ({
-          fontWeight: "500",
-          borderRadius: "50px",
-          bg: mode("secondaryGray.300", "brand.400")(props),
-          color: mode("brand.500", "white")(props),
-          _focus: {
-            bg: mode("secondaryGray.300", "brand.400")(props),
-          },
-          _active: { bg: mode("secondaryGray.300", "brand.400")(props) },
+          fontWeight: "600",
+          borderRadius: "16px",
+          bg: "#ffffff",
+          color: "#15181F",
+          // _focus: {
+          //   bg: "#373d4b",
+          //   color: "#ffffff",
+          // },
           _hover: {
-            bg: mode("secondaryGray.200", "brand.400")(props),
+            bg: !props.isDisabled && "#373d4b",
+            color:!props.isDisabled && "#ffffff",
+          },
+          _disabled: {
+            cursor: "not-allowed",
+            bg: "#ffffff",
+            color: "#15181F",
           },
         }),
         setup: (props) => ({

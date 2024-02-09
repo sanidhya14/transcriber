@@ -1,0 +1,71 @@
+.file-selector-main-container {
+    height: 100%;
+}
+
+.file-selector-main-grid {
+    display: grid;
+    grid-template-rows: 4fr 1fr;
+    gap: 8px;
+    margin-bottom: 20px;
+    height: 100%;
+}
+
+.file-selector-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $appBackgroundTertiaryColor;
+    border: 1px dashed;
+    border-color: $appBackgroundSecondaryColor;
+    border-radius: 16px;
+    width: 100%;
+    height: 80%;
+    min-height: 70%;
+    cursor: pointer;
+}
+
+.file-selector-icon-container {
+    justify-content: center;
+}
+
+.file-selector-icon {
+    width: 80px;
+    height: 80px;
+    color: $appOutlineColor;
+}
+
+.file-selector-main-text {
+    font-size: xl;
+    font-weight: 700;
+    color: $appOutlineColor;
+}
+
+.file-selector-secondary-text {
+    font-size: sm;
+    font-weight: 500;
+    color: $appOutlineSecondaryColor;
+}
+
+.file-selector-file-display-container {
+    overflow-y: auto;
+    height: 120px;
+    box-shadow: inset 0 0 10px rgba(31, 35, 44, 0.9);
+}
+
+.file-selector-file-item {
+    display: flex;
+    align-items: center;
+    padding: 4px 16px;
+    width: 100%;
+}
+
+.file-selector-file-text {
+    color: $appOutlineColor;
+    font-weight: bold;
+    font-size: xl;
+}
+
+.file-selector-file-remove-button {
+    border-radius: 5px;
+    background-color: $appOutlineSecondaryColor;
+}

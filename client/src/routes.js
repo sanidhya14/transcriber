@@ -1,6 +1,4 @@
 import React from "react";
-
-import { Icon } from "@chakra-ui/react";
 import {
   MdHome,
   MdTranscribe,
@@ -18,28 +16,28 @@ const routes = [
     name: "Home",
     layout: "/admin",
     path: "/home",
-    icon: <Icon as={MdHome} width="30px" height="30px" color="inherit" />,
+    icon: <MdHome className="route-icon " />,
     component: Home,
   },
   {
     name: "Transcribe",
     layout: "/admin",
     path: "/transcribe",
-    icon: <Icon as={MdTranscribe} width="30px" height="30px" color="inherit" />,
+    icon: <MdTranscribe className="route-icon " />,
     component: Transcribe,
   },
   {
     name: "History",
     layout: "/admin",
     path: "/history",
-    icon: <Icon as={MdHistory} width="30px" height="30px" color="inherit" />,
+    icon: <MdHistory className="route-icon " />,
     component: History,
   },
   {
     name: "Settings",
     layout: "/admin",
     path: "/setting",
-    icon: <Icon as={MdSettings} width="30px" height="30px" color="inherit" />,
+    icon: <MdSettings className="route-icon " />,
     component: Settings,
   },
 ];

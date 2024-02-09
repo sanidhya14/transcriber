@@ -6,7 +6,7 @@
     width: 100vh;
     height: 8vh;
     min-height: 8%;
-    background-color: $defaultLightBackground;
+    background-color: $appBackgroundSecondaryColor;
 }
 
 .navbar-inner {
@@ -25,14 +25,14 @@
 
     &:hover {
         cursor: pointer;
-        background-color: $defaultShadow;
+        background-color: $defaultHoverColor;
     }
 }
 
 .menu-button-icon {
     width: 30px;
     height: 30px;
-    color: $defaultDarkPrimary;
+    color: $appOutlineColor;
 }
 
 .brand-container {
@@ -55,20 +55,20 @@
 
     &:hover {
         cursor: pointer;
-        background-color: $defaultShadow;
+        background-color: $defaultHoverColor;
     }
 }
 
 .theme-button-sun {
     height: 30px;
     width: 30px;
-    color: $defaultDarkPrimary;
+    color: $appOutlineColor;
 }
 
 .theme-button-moon {
     height: 30px;
     width: 30px;
-    color: $defaultDarkPrimary;
+    color: $appOutlineColor;
 }
 
 .notifications-container {
@@ -78,14 +78,14 @@
 
     &:hover {
         cursor: pointer;
-        background-color: $defaultShadow;
+        background-color: $defaultHoverColor;
     }
 }
 .notifications-button {
     border-radius: 10px;
     width: 30px;
     height: 30px;
-    color: $defaultDarkPrimary;
+    color: $appOutlineColor;
 }
 
 .notification-item-icon {
@@ -107,20 +107,20 @@
 
     &:hover {
         cursor: pointer;
-        background-color: $defaultShadow;
+        background-color: $defaultHoverColor;
     }
 }
 
 .profile-menu-button {
     height: 30px;
     width: 30px;
-    color: $defaultDarkPrimary;
+    color: $appOutlineColor;
 }
 
 .profile-list-icon {
     height: 30px;
     width: 30px;
-    color: $defaultDarkOutline;
+    color: $appOutlineColor;
 }
 
 .profile-list-text {

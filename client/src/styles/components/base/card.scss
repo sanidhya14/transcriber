@@ -1,0 +1,11 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    border-radius: 20px;
+    min-width: 0px;
+    word-wrap: break-word;
+    background: $appBackgroundSecondaryColor;
+    background-clip: border-box;
+}

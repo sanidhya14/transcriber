@@ -17,9 +17,9 @@ function SidebarContent(props) {
       </Stack>
 
       <Box className="sidebar-card-box">
-        <SidebarCard
+        {/* <SidebarCard
           isExpanded={isExpanded}
-        />
+        /> */}
       </Box>
     </Flex>
   );

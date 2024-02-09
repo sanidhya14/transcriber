@@ -22,7 +22,7 @@ export function SidebarLinks(props) {
   }
 
   const getItemSideMarkerCSSClassName = (route) => {
-    return activeRoute(route) ? "side-marker-active" : "side-marker";
+    return activeRoute(route) ? "side-marker": null;
   }
 
   const createLinks = (routes) => {
@@ -59,7 +59,8 @@ export function SidebarLinks(props) {
                       {route.name}
                     </Text> : null}
                 </Flex>
-                <Spacer />
+                {/* Hack for now, fix later */}
+                {isExpanded === true ? <Spacer /> : null }
                 <Box
                   className={getItemSideMarkerCSSClassName(route)}
                 />

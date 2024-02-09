@@ -6,7 +6,7 @@
 }
 
 .sidebar-inner-flex {
-    background-color: white;
+    background-color: $appBackgroundSecondaryColor;
     transition: 0.15s ease-out;
     width: 10vh; /* Default width */
     height: 100vh;

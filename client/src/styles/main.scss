@@ -1,8 +1,21 @@
-@import 'variables';
+@import "variables";
 
-@import './components/navbar.scss';
+@import "./components/base/layout.scss";
+@import "./components/base/card.scss";
 
-@import './components/sidebar/content.scss';
-@import './components/sidebar/links.scss';
-@import './components/sidebar/card.scss';
-@import './components/sidebar/sidebar.scss';
+@import "./components/navbar.scss";
+
+@import "./components/sidebar/content.scss";
+@import "./components/sidebar/links.scss";
+@import "./components/sidebar/card.scss";
+@import "./components/sidebar/sidebar.scss";
+
+@import "./components/routes.scss";
+
+@import "./components/admin-layout.scss";
+
+@import "./components/transcribe/index.scss";
+@import "./components/transcribe/file-selector.scss";
+@import "./components/transcribe/timeline.scss";
+@import "./components/transcribe/run-options.scss";
+@import "./components/transcribe/transcribe-status.scss";

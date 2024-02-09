@@ -1,0 +1,29 @@
+.grid-container {
+    height: 85vh;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-column-gap: $appDefaultMargin;
+    margin-bottom: 20px;
+    color: $appBackgroundColor;
+}
+
+.transcribe-main-container {
+    @extend .card;
+    padding: 20px;
+}
+
+.transcribe-step-text {
+    color: $defaultDarkOutline;
+    font-size: md;
+    text-align: start;
+}
+
+.transcribe-step-header {
+    flex-direction: row;
+    margin-bottom: 16px;
+}
+
+.transcribe-step-footer {
+    flex-direction: row;
+    margin-bottom: 16px;
+}

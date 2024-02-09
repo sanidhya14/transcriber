@@ -1,0 +1,60 @@
+.transcribe-status-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    .heading {
+        font-size: 40px;
+        color: $appOutlineSecondaryColor;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+
+    .progress-bar {
+        width: 90%;
+        height: 30px;
+        border-radius: 10px;
+        overflow: hidden;
+
+        .progress {
+            color: $appHighlightColor;
+            width: 100%;
+            height: 100%;
+            background-color: $appBackgroundColor;
+        }
+
+        .label {
+            margin-left: 10px;
+            font-weight: 700;
+            color: $appOutlineSecondaryColor;
+        }
+    }
+
+    .status-metadata-container {
+        display: flex;
+        align-items: center;
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+
+    .text-container {
+        color: $appOutlineSecondaryColor;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+
+    .button-container {
+        .blue-button {
+            background-color: $appOutlineColor;
+            color: $appBackgroundColor;
+        }
+
+        .red-button {
+            background-color: rgba(255, 0, 0, 0.533);
+            color: $appLighterColor;
+        }
+    }
+}

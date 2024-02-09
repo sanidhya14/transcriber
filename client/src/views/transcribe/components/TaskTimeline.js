@@ -1,20 +1,18 @@
 import React from "react";
 import {
     Flex,
-    useColorModeValue,
 } from "@chakra-ui/react";
 import { IoEllipseOutline, IoCheckmarkCircleSharp } from "react-icons/io5";
 import Card from "components/card/Card";
 import TimelineRow from "./TimelineRow";
-import { TEXT_COLOR_LIGHT, TEXT_COLOR_DARK, HIGHLIGHT_COLOR_LIGHT, HIGHLIGHT_COLOR_DARK, ICON_COLOR_LIGHT, ICON_COLOR_DARK } from "constants/ThemeConstants";
 
 function TaskTimeline(props) {
 
     const { currentStepIndex, completedSteps, disabledSteps, handleCurrentStepChange } = { ...props };
 
-    const textColor = useColorModeValue(TEXT_COLOR_LIGHT, TEXT_COLOR_DARK);
-    const highlightColor = useColorModeValue(HIGHLIGHT_COLOR_LIGHT, HIGHLIGHT_COLOR_DARK);
-    const iconColor = useColorModeValue(ICON_COLOR_LIGHT, ICON_COLOR_DARK);
+    const textColor = "#ffffff"
+    const highlightColor = "#F64A8A";
+    const iconColor = "#ffffffa1";
 
     // TODO: add dynamic descriptions from backend api calls
     const timelineSteps = [
@@ -76,8 +74,8 @@ function TaskTimeline(props) {
     };
 
     return (
-        <Card p="1rem" height="100%" width="100%">
-            <Flex direction="column" p="1rem" mt="1rem">
+        <Card className="card">
+            <Flex className="timeline-container">
                 {timelineSteps.map((row, index, arr) => {
                     return (
                         <TimelineRow

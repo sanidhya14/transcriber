@@ -1,0 +1,54 @@
+.run-options-container {
+    margin-bottom: 20px;
+    color: $appOutlineColor;
+
+    .heading {
+        margin-bottom: 10px;
+        font-size: 1.25rem;
+        align-self: flex-start; // Heading always stays at start or left
+    }
+
+    .form-control {
+        margin-bottom: 20px;
+
+        .justifly-flex {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: space-between; // Items on the left and right sides
+
+            .form-label {
+                margin-right: 10px;
+                font-weight: bold;
+                align-self: flex-start; // Form label stays on left
+            }
+
+            .spacer {
+                flex: 1;
+            }
+
+            .select,
+            .input {
+                width: auto; // Select and input boxes should wrap content always
+            }
+
+            .radio-group {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .radio,
+            .checkbox,
+            .switch {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                align-self: flex-end; // Items for the form are always on the right or end
+            }
+        }
+    }
+}

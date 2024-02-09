@@ -1,0 +1,57 @@
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  padding-left: 50px;
+}
+
+.timeline-row-container {
+  align-items: center;
+  min-height: 78px;
+  justify-content: start;
+  margin-bottom: 5px;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:hover[disabled] {
+    cursor: not-allowed;
+  }
+
+  .timeline-row-inner-container {
+    flex-direction: column;
+    height: 100%;
+
+    .icon {
+      height: 30px;
+      width: 26px;
+      padding-right: 6px;
+      z-index: 1;
+      position: relative;
+      right: 0px;
+      left: -8px;
+    }
+
+    .connector {
+      width: 2px;
+    }
+  }
+
+  .timeline-row-text-container {
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+
+    .title {
+      font-size: sm;
+      font-weight: bold;
+    }
+
+    .date {
+      font-size: sm;
+      color: gray.400;
+      font-weight: normal;
+    }
+  }
+}

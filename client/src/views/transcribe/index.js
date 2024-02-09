@@ -7,7 +7,6 @@ import { TRANSCRIPTION_JOB_STATUS } from "constants/JobConstants";
 import RunOptions from "./components/RunOptions";
 import TranscribeStatus from "./components/TranscribeStatus";
 import { INPUT_LANGUAGE } from "constants/JobConstants";
-import { ICON_COLOR_LIGHT } from "constants/ThemeConstants";
 
 const INITIAL_STATE = {
   currentStepIndex: 0,
@@ -166,16 +165,16 @@ export default function Transcribe() {
     console.log(
       "Initiating transcription with payload: " +
       JSON.stringify({
-          files: selectedFiles,
-          options: [
-            audioLanguage,
-            transcriptionMode,
-            outputLocation,
-            outputFormats,
-            enableSpeakerIdentification,
-            enableWordLevelTimestamps,
-          ],
-        })
+        files: selectedFiles,
+        options: [
+          audioLanguage,
+          transcriptionMode,
+          outputLocation,
+          outputFormats,
+          enableSpeakerIdentification,
+          enableWordLevelTimestamps,
+        ],
+      })
     );
   };
 
@@ -220,69 +219,59 @@ export default function Transcribe() {
     switch (currentStepIndex) {
       case 0:
         return (
-          <Card p="1rem" height="100%" width="100%">
-            <FileSelector
-              height="100%"
-              width="100%"
-              selectedFiles={selectedFiles}
-              handleFileSelection={(newSelectedFiles) =>
-                handleFileSelection(newSelectedFiles)
-              }
-              handleFileRemoveButtonClick={(fileIdentifier) =>
-                handleFileRemoveButtonClick(fileIdentifier)
-              }
-            ></FileSelector>
-          </Card>
+          <FileSelector
+            selectedFiles={selectedFiles}
+            handleFileSelection={(newSelectedFiles) =>
+              handleFileSelection(newSelectedFiles)
+            }
+            handleFileRemoveButtonClick={(fileIdentifier) =>
+              handleFileRemoveButtonClick(fileIdentifier)
+            }
+          ></FileSelector>
         );
 
       case 1:
         return (
-          <Card p="1rem" height="80vh" width="100%" overflowY="auto">
-            <RunOptions
-              height="100%"
-              width="100%"
-              audioLanguage={audioLanguage}
-              handleAudioLanguageChange={(language) =>
-                handleAudioLanguageChange(language)
-              }
-              transcriptionMode={transcriptionMode}
-              handleTranscriptionModeChange={(mode) =>
-                handleTranscriptionModeChange(mode)
-              }
-              outputLocation={outputLocation}
-              handleOutputLocationChange={(location) =>
-                handleOutputLocationChange(location)
-              }
-              outputFormats={outputFormats}
-              handleOutputFormatsChange={(formats) =>
-                handleOutputFormatsChange(formats)
-              }
-              enableSpeakerIdentification={enableSpeakerIdentification}
-              toggleSpeakerIdentification={(flag) =>
-                toggleSpeakerIdentification(flag)
-              }
-              enableWordLevelTimestamps={enableWordLevelTimestamps}
-              toggleWordLevelTimestamps={(flag) =>
-                toggleWordLevelTimestamps(flag)
-              }
-            />
-          </Card>
+          <RunOptions
+            audioLanguage={audioLanguage}
+            handleAudioLanguageChange={(language) =>
+              handleAudioLanguageChange(language)
+            }
+            transcriptionMode={transcriptionMode}
+            handleTranscriptionModeChange={(mode) =>
+              handleTranscriptionModeChange(mode)
+            }
+            outputLocation={outputLocation}
+            handleOutputLocationChange={(location) =>
+              handleOutputLocationChange(location)
+            }
+            outputFormats={outputFormats}
+            handleOutputFormatsChange={(formats) =>
+              handleOutputFormatsChange(formats)
+            }
+            enableSpeakerIdentification={enableSpeakerIdentification}
+            toggleSpeakerIdentification={(flag) =>
+              toggleSpeakerIdentification(flag)
+            }
+            enableWordLevelTimestamps={enableWordLevelTimestamps}
+            toggleWordLevelTimestamps={(flag) =>
+              toggleWordLevelTimestamps(flag)
+            }
+          />
         );
 
       case 2:
         return (
-          <Card p="1rem" height="80vh" width="100%" align="center">
-            <TranscribeStatus
-              statusDescription={statusDescription}
-              statusPercentage={statusPercentage}
-              estimatedTimeRemaining={estimatedTimeRemaining}
-              toggleCancelJobModalVisibility={(flag) =>
-                toggleCancelJobModalVisibility(flag)
-              }
-              isCancelJobModalVisible={isCancelJobModalVisible}
-              cancelTranscriptionJob={() => cancelTranscriptionJob()}
-            />
-          </Card>
+          <TranscribeStatus
+            statusDescription={statusDescription}
+            statusPercentage={statusPercentage}
+            estimatedTimeRemaining={estimatedTimeRemaining}
+            toggleCancelJobModalVisibility={(flag) =>
+              toggleCancelJobModalVisibility(flag)
+            }
+            isCancelJobModalVisible={isCancelJobModalVisible}
+            cancelTranscriptionJob={() => cancelTranscriptionJob()}
+          />
         );
 
       default:
@@ -291,41 +280,27 @@ export default function Transcribe() {
   };
 
   return (
-    <Box pt={{ base: "130px", md: "80px", xl: "80px" }} height="100vh">
-      <Grid
-        height="85vh"
-        columns={2}
-        gap={4}
-        mb="20px"
-        templateColumns="1fr 4fr"
-      >
+    <Box className="page-container">
+      <Grid className="grid-container">
         <TaskTimeline
           currentStepIndex={currentStepIndex}
           completedSteps={completedSteps}
           disabledSteps={disabledSteps}
           handleCurrentStepChange={(step) => handleCurrentStepChange(step)}
         />
-        <Card p="1rem" height="100%" width="100%">
-          <Text
-            color={ICON_COLOR_LIGHT}
-            fontSize="md"
-            my={{ base: "auto", "2xl": "10px" }}
-            ml="1rem"
-            textAlign="start"
-          >
-            Step {currentStepIndex + 1}
-          </Text>
-
+        <Card className="transcribe-main-container">
+          <Flex className="transcribe-step-header">
+            <Text className="transcribe-step-text">
+              Step {currentStepIndex + 1}
+            </Text>
+          </Flex>
           {getPage(currentStepIndex)}
-
           {currentStepIndex < totalSteps - 1 && (
-            <Flex direction="row" mt={4}>
+            <Flex className="transcribe-step-footer">
               <Button
-                colorScheme="blue"
-                ml={2}
-                mr={2}
                 onClick={() => handleNextButtonClick()}
                 disabled={isNextButtonDisabled()}
+                variant="action"
               >
                 Next
               </Button>
