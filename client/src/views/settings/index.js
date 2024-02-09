@@ -101,13 +101,14 @@ export default function Settings() {
         </Card>
 
         <Card className="card">
-          <Heading className="heading" mt="4px">
+          <Heading className="heading">
             Export
           </Heading>
           <FormControl className="form-control">
             <FormLabel className="form-label">Output formats</FormLabel>
             <Stack className="checkbox-stack">
               <Checkbox
+                className="checkbox"
                 isChecked={outputFormats.includes("txt")}
                 onChange={() => handleOutputFormatChange("txt")}
               >
