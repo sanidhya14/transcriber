@@ -9,8 +9,6 @@ import {
   Th,
   Thead,
   Tr,
-  useColorModeValue,
-  Box,
 } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import {
@@ -20,6 +18,7 @@ import {
   useTable,
 } from "react-table";
 import { PAGE_SIZE } from "constants/TranscriptionHistoryConstants.js";
+import Card from "components/card/Card";
 
 const COLUMNS_DATA = [
   {
@@ -78,9 +77,6 @@ export default function TranscriptHistoryTable(props) {
 
   initialState.pageSize = PAGE_SIZE;
 
-  const textColor = useColorModeValue("secondaryGray.900", "white");
-  const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
-
   const moment = require("moment");
   const convertEpochToDate = (epochTimestamp) => {
     return moment.unix(epochTimestamp).format("Do MMM, YYYY");
@@ -92,23 +88,19 @@ export default function TranscriptHistoryTable(props) {
   };
 
   return (
-    <Box>
-      <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
-        <Thead>
+    <Card className="card">
+      <Table {...getTableProps()} variant="simple" className="table">
+        <Thead className="thead">
           {headerGroups.map((headerGroup, index) => (
-            <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
+            <Tr {...headerGroup.getHeaderGroupProps()} key={index} className="tr">
               {headerGroup.headers.map((column, index) => (
                 <Th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  pe="10px"
                   key={index}
-                  borderColor={borderColor}
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  className="th"
                 >
                   <Flex
-                    justify="space-between"
-                    align="center"
-                    fontSize={{ sm: "10px", lg: "12px" }}
-                    color="gray.400"
+                    className="header-flex"
                   >
                     {column.render("Header")}
                   </Flex>
@@ -117,40 +109,36 @@ export default function TranscriptHistoryTable(props) {
             </Tr>
           ))}
         </Thead>
-        <Tbody {...getTableBodyProps()}>
+        <Tbody {...getTableBodyProps()} className="tbody">
           {page.map((row, index) => {
             prepareRow(row);
             return (
-              <Tr
+              <Tr className="tr"
                 key={index}
                 {...row.getRowProps()}
                 onClick={() => handleRowClick(row)}
-                style={{ cursor: "pointer" }}
               >
                 {row.cells.map((cell, index) => {
                   let data = "";
                   if (cell.column.Header === "NAME") {
                     data = (
-                      <Flex align="center" key={index}>
+                      <Flex>
                         <Checkbox
+                          className="checkbox-container"
+                          colorScheme="pink"
                           isChecked={selectedItems.includes(row)}
                           onChange={(e) => handleTableItemSelection(e, row)}
-                          colorScheme="brandScheme"
-                          me="10px"
                         />
-                        <Text color={textColor} fontSize="sm" fontWeight="700">
+                        <Text className="text-container">
                           {cell.value[0]}
                         </Text>
                       </Flex>
                     );
                   } else if (cell.column.Header === "LANGUAGE") {
                     data = (
-                      <Flex align="center">
+                      <Flex>
                         <Text
-                          me="10px"
-                          color={textColor}
-                          fontSize="sm"
-                          fontWeight="700"
+                          className="text-container"
                         >
                           {cell.value}
                         </Text>
@@ -158,20 +146,20 @@ export default function TranscriptHistoryTable(props) {
                     );
                   } else if (cell.column.Header === "DURATION") {
                     data = (
-                      <Text color={textColor} fontSize="sm" fontWeight="700">
+                      <Text className="text-container">
                         {cell.value}
                       </Text>
                     );
                   } else if (cell.column.Header === "CREATED") {
                     data = (
-                      <Text color={textColor} fontSize="sm" fontWeight="700">
+                      <Text className="text-container">
                         {/* This should be done while fetching from backend */}
                         {convertEpochToDate(cell.value)}
                       </Text>
                     );
                   } else if (cell.column.Header === "LAST UPDATED") {
                     data = (
-                      <Text color={textColor} fontSize="sm" fontWeight="700">
+                      <Text className="text-container">
                         {/* This should be done while fetching from backend */}
                         {convertEpochToDate(cell.value)}
                       </Text>
@@ -179,12 +167,9 @@ export default function TranscriptHistoryTable(props) {
                   }
                   return (
                     <Td
+                      className="td"
                       {...cell.getCellProps()}
                       key={index}
-                      fontSize={{ sm: "14px" }}
-                      lineHeight="2"
-                      minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                      borderColor="transparent"
                     >
                       {data}
                     </Td>
@@ -196,39 +181,35 @@ export default function TranscriptHistoryTable(props) {
         </Tbody>
       </Table>
 
-      {/* Pagination */}
-      <Flex justify="end" px="25px" align="center">
+      <Flex className="pagination">
         <Button
+          className="button"
           disabled={!canPreviousPage}
           onClick={() => previousPage()}
           variant="hidden"
-          fontSize="14px"
-          mr="2"
         >
           Prev
         </Button>
         {pageOptions.map((pageOption) => (
           <Button
+            className="button"
             key={pageOption}
             onClick={() => gotoPage(pageOption)}
             variant="hidden"
-            fontSize="14px"
-            mr="2"
             fontWeight={pageOption === pageCount ? "bold" : "normal"}
           >
             {pageOption + 1}
           </Button>
         ))}
         <Button
+          className="button"
           disabled={!canNextPage}
           onClick={() => nextPage()}
           variant="link"
-          fontSize="14px"
-          mr="2"
         >
           Next
         </Button>
       </Flex>
-    </Box>
+    </Card>
   );
 }

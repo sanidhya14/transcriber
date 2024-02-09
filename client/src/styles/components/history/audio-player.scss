@@ -1,0 +1,46 @@
+.audio-player-container {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    padding: 10px;
+    padding-left: 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    align-items: center;
+    justify-content: space-between;
+    width: 500px;
+    background-color: $appBackgroundTertiaryColor;
+
+    .icon-button {
+        border-radius: 50%;
+        background-color: $appOutlineColor;
+        font-size: 1.5rem;
+
+        &:hover {
+            background-color: gray.300;
+        }
+    }
+
+    .play-container {
+        align-items: center;
+        width: 100%;
+        margin-left: 12px;
+
+        .text-container {
+            font-size: smaller;
+            margin-right: 15px;
+            margin-left: 15px;
+            color: $appOutlineColor;
+        }
+
+        .slider-container {
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            align-items: center;
+            margin-left: 10px;
+        }
+    }
+}

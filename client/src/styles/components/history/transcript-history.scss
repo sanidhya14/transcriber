@@ -1,0 +1,33 @@
+.history-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    padding: 0 25px;
+    margin-bottom: 20px;
+    align-items: center;
+
+    .header-text {
+        color: $appOutlineColor;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 100%;
+    }
+
+    .action-buttons {
+        margin: 8px;
+
+        .button {
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+    }
+}
+
+.transcripts-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}

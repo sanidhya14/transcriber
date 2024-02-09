@@ -148,34 +148,25 @@ export default function Transcript() {
   };
 
   return (
-    <Box p={4}>
-      <Grid
-        templateRows="1fr 4fr"
-        gap={2}
-        height="100vh"
-        templateAreas="'header' 'transcription'"
-      >
-        {/* Header Section */}
-        <Card p="1rem" height="100%" width="100%">
-          <HStack direction="row" spacing={4}>
+    <Box>
+      <Grid className="transcript-grid-container">
+        <Card className="card">
+          <HStack className="hstack-container">
             {viewMode === TRANSCRIPTION_VIEWER_MODE.VIEWER ? (
-              <Heading fontSize="2xl">{transcriptionName}</Heading>
+              <Heading className="heading-container">{transcriptionName}</Heading>
             ) : (
               <Input
                 value={transcriptionName}
                 onChange={(e) => setTranscriptionName(e.target.value)}
               />
             )}
-            <Spacer />
-            <Button onClick={handleViewModeToggle}>
+            <Spacer className="spacer" />
+            <Button className="button-container" onClick={handleViewModeToggle}>
               <Icon
+                className="icon-container"
                 as={getIconForViewerModeButton()}
-                width="20px"
-                height="20px"
-                color="inherit"
-                mr={2}
               />
-              <Text fontSize="sm">{viewMode}</Text>
+              <Text className="text-container">{viewMode}</Text>
             </Button>
             <Menu handleExport={handleExportButtonClick} />
             <ExportModal
@@ -183,37 +174,33 @@ export default function Transcript() {
               toggleExportModalVisibility={toggleExportModalVisibility}
             />
           </HStack>
-          <HStack direction="row" mt="2rem" spacing={4}>
-            <HStack direction="row">
+          <HStack className="date-time-section">
+            <HStack className="row-stack">
               <Icon
+                className="icon-container"
                 as={MdCalendarMonth}
-                width="20px"
-                height="20px"
-                color="inherit"
               />
-              <Text fontSize="sm">{transcriptionLastUpdatedDate}</Text>
+              <Text className="text-container">{transcriptionLastUpdatedDate}</Text>
             </HStack>
-            <HStack direction="row">
+            <HStack className="row-stack">
               <Icon
                 as={MdOutlineAccessTime}
-                width="20px"
-                height="20px"
-                color="inherit"
+                className="icon-container"
               />
-              <Text fontSize="sm">{transcriptionDuration}</Text>
+              <Text className="text-container">{transcriptionDuration}</Text>
             </HStack>
           </HStack>
         </Card>
 
-        <Card p="1rem" height="100%" width="100%" overflowY="auto">
-          <VStack spacing={8} alignItems="start" mt={4}>
+        <Card className="card">
+          <VStack className="transcription-vstack-container">
             {Object.entries(transcriptData).map(([key, value]) => {
               return (
-                <VStack alignItems="start">
-                  <HStack alignItems="center">
-                    <Avatar size="sm" src={speakers[value.speakerIndex].logo} />
+                <VStack className="transcript-segment-container">
+                  <HStack className="transcript-hstack-container">
+                    <Avatar className="avatar" src={speakers[value.speakerIndex].logo} />
                     {viewMode === TRANSCRIPTION_VIEWER_MODE.VIEWER ? (
-                      <Text fontWeight="bold">
+                      <Text className="speaker-text-container">
                         {speakers[value.speakerIndex].label}
                       </Text>
                     ) : (
@@ -229,11 +216,7 @@ export default function Transcript() {
                     )}
                     <Spacer />
                     <Text
-                      fontSize="sm"
-                      color="gray.500"
-                      fontWeight="bold"
-                      _hover={{ color: "blue.500" }}
-                      cursor="pointer"
+                      className="timestamp-text-container"
                       onClick={() =>
                         handleAudioTranscriptTimestampClick(value.timestamp)
                       }
@@ -245,7 +228,7 @@ export default function Transcript() {
                     <Text>{value.text}</Text>
                   ) : (
                     <Input
-                      width="100vh"
+                      className="edit-input-box"
                       value={value.text}
                       onChange={(e) =>
                         handleTranscriptTextChange(key, e.target.value)
@@ -256,10 +239,9 @@ export default function Transcript() {
               );
             })}
           </VStack>
-          <Box mb="30px" />
         </Card>
-        <AudioPlayer audio={audio} />
       </Grid>
+      <AudioPlayer audio={audio} />
     </Box>
   );
 }

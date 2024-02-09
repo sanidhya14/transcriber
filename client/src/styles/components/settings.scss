@@ -1,0 +1,29 @@
+.settings-container {
+    color: $appOutlineColor;
+
+    .heading {
+        font-size: 1.5rem;
+        margin-top: 4px;
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        margin-bottom: 4px;
+        display: flex;
+        justify-content: space-between;
+
+        .form-label {
+            margin-right: 8px;
+        }
+
+        .switch {
+            margin-left: auto;
+        }
+
+        .checkbox-stack {
+            .checkbox {
+                margin-bottom: 2px;
+            }
+        }
+    }
+}

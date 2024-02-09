@@ -3,14 +3,12 @@ import {
   Flex,
   Spacer,
   Text,
-  useColorModeValue,
   IconButton,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import ActionConfirmation from "components/modals/ActionConfirmation";
 import { ACTION_CONFIRMATION_TYPE } from "constants/ModalConstants";
 import { TRANSCRIPTS_FETCH_STATUS } from "constants/TranscriptionHistoryConstants";
-import Card from "components/card/Card.js";
 import { IoRefreshOutline } from "react-icons/io5";
 import TranscriptHistoryTable from "./TranscriptHistoryTable";
 import Loading from "components/progress/Loading";
@@ -34,7 +32,6 @@ function initializeState(initialState) {
 }
 
 export default function TranscriptionHistory(props) {
-  const textColor = useColorModeValue("secondaryGray.900", "white");
 
   const state = initializeState(INITIAL_STATE);
 
@@ -186,87 +183,74 @@ export default function TranscriptionHistory(props) {
   }, [transcriptsFetchStatus]);
 
   return (
-    <Card
-      direction="column"
-      w="100%"
-      px="0px"
-      overflowY={{ sm: "scroll", lg: "hidden" }}
-    >
-      <Flex px="25px" justify="space-between" mb="20px" align="center">
+    <Flex className="history-container">
+      <Flex className="header">
         <Text
-          color={textColor}
-          fontSize="22px"
-          fontWeight="700"
-          lineHeight="100%"
+          className="header-text"
         >
           My Transcripts
         </Text>
         <Spacer />
         <IconButton
+          className="action-buttons"
           disabled={
             transcriptsFetchStatus === TRANSCRIPTS_FETCH_STATUS.REQUESTED
           }
           icon={<IoRefreshOutline />}
-          colorScheme="blue"
-          ml={2}
-          mr={2}
-          size="lg"
           onClick={() => handleRefreshButtonClick()}
         />
         <Button
+          className="action-buttons"
           disabled={
             transcriptsFetchStatus === TRANSCRIPTS_FETCH_STATUS.REQUESTED ||
             selectedTranscripts.length === 0
           }
-          colorScheme="blue"
-          ml={2}
-          mr={2}
           onClick={() => handleExportTranscriptsButtonClick()}
         >
           Export
         </Button>
         <Button
+          className="action-buttons"
           disabled={
             transcriptsFetchStatus === TRANSCRIPTS_FETCH_STATUS.REQUESTED ||
             selectedTranscripts.length === 0
           }
-          colorScheme="blue"
-          ml={2}
-          mr={2}
           onClick={() => handleDeleteTranscriptsButtonClick()}
         >
           Delete
         </Button>
       </Flex>
 
-      {transcriptsFetchStatus === TRANSCRIPTS_FETCH_STATUS.REQUESTED ? (
-        <Loading loadingText="Loading Transcripts" />
-      ) : (
-        <TranscriptHistoryTable
-          transcriptsFetchStatus={transcriptsFetchStatus}
-          tableData={getTableDataFromTranscripts()}
-          handleTableItemSelection={(event, id) =>
-            handleTableItemSelection(event, id)
-          }
-          selectedItems={selectedTranscripts}
+      <Flex className="transcripts-container">
+        {transcriptsFetchStatus === TRANSCRIPTS_FETCH_STATUS.REQUESTED ? (
+          <Loading loadingText="Loading Transcripts" />
+        ) : (
+          <TranscriptHistoryTable
+            transcriptsFetchStatus={transcriptsFetchStatus}
+            tableData={getTableDataFromTranscripts()}
+            handleTableItemSelection={(event, id) =>
+              handleTableItemSelection(event, id)
+            }
+            selectedItems={selectedTranscripts}
+          />
+        )}
+
+        <ExportModal
+          isExportModalVisible={isExportModalVisible}
+          toggleExportModalVisibility={toggleExportModalVisibility}
         />
-      )}
 
-      <ExportModal
-        isExportModalVisible={isExportModalVisible}
-        toggleExportModalVisibility={toggleExportModalVisibility}
-      />
-
-      <ActionConfirmation
-        confirmationType={ACTION_CONFIRMATION_TYPE.WARN}
-        confirmnationHeading="Delete Transcripts"
-        confirmnationMessage="Are you sure ? This will permanently delete the selected transcripts"
-        isVisible={isDeleteTranscriptsModalVisible}
-        toggleVisibility={(flag) =>
-          toggleDeleteTranscriptsModalVisibility(flag)
-        }
-        handleConfirmation={() => confirmDeleteTranscripts()}
-      />
-    </Card>
+        <ActionConfirmation
+          confirmationType={ACTION_CONFIRMATION_TYPE.WARN}
+          confirmnationHeading="Delete Transcripts"
+          confirmnationMessage="Are you sure ? This will permanently delete the selected transcripts"
+          isVisible={isDeleteTranscriptsModalVisible}
+          toggleVisibility={(flag) =>
+            toggleDeleteTranscriptsModalVisibility(flag)
+          }
+          handleConfirmation={() => confirmDeleteTranscripts()}
+        />
+      </Flex>
+    </Flex>
   );
 }

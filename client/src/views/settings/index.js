@@ -12,7 +12,7 @@ import {
   FormLabel,
   Switch,
 } from "@chakra-ui/react";
-import Card from "./components/Card";
+import Card from "components/card/Card";
 
 export default function Settings() {
   const [defaultLanguage, setDefaultLanguage] = useState("Auto-Detect");
@@ -66,173 +66,161 @@ export default function Settings() {
   };
 
   return (
-    <Box pt={{ base: "130px", md: "80px", xl: "80px" }} height="100vh">
-      <Card p="1rem" height="80vh" width="100%" overflowY="auto">
-        <Heading as="h2" size="md" mt={8} mb={4}>
-          Run Settings
-        </Heading>
-        <FormControl display="flex" justifyContent="space-between" mb={4}>
-          <FormLabel>Default Language</FormLabel>
-          <Select
-            value={defaultLanguage}
-            onChange={(e) => handleDefaultLanguageChange(e.target.value)}
-          >
-            <option value="Auto-detect">Auto-detect</option>
-            <option value="English">English</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-            {/* Add other language options, progreamtaically take from db list*/}
-          </Select>
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>Transcription Mode</FormLabel>
-          <RadioGroup
-            value={transcriptionMode}
-            onChange={handleTranscriptionModeChange}
-          >
-            <Stack spacing={2}>
-              <Radio value="Fast">Fast</Radio>
-              <Radio value="Balanced">Balanced</Radio>
-              <Radio value="High Accuracy">High Accuracy</Radio>
+    <Box className="page-container">
+      <Box className="settings-container">
+        <Card className="card">
+          <Heading className="heading">
+            Run Settings
+          </Heading>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Default Language</FormLabel>
+            <Select
+              value={defaultLanguage}
+              onChange={(e) => handleDefaultLanguageChange(e.target.value)}
+            >
+              <option value="Auto-detect">Auto-detect</option>
+              <option value="English">English</option>
+              <option value="Spanish">Spanish</option>
+              <option value="French">French</option>
+              {/* Add other language options, progreamtaically take from db list*/}
+            </Select>
+          </FormControl>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Transcription Mode</FormLabel>
+            <RadioGroup
+              value={transcriptionMode}
+              onChange={handleTranscriptionModeChange}
+            >
+              <Stack spacing={2}>
+                <Radio value="Fast">Fast</Radio>
+                <Radio value="Balanced">Balanced</Radio>
+                <Radio value="High Accuracy">High Accuracy</Radio>
+              </Stack>
+            </RadioGroup>
+          </FormControl>
+        </Card>
+
+        <Card className="card">
+          <Heading className="heading" mt="4px">
+            Export
+          </Heading>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Output formats</FormLabel>
+            <Stack className="checkbox-stack">
+              <Checkbox
+                isChecked={outputFormats.includes("txt")}
+                onChange={() => handleOutputFormatChange("txt")}
+              >
+                txt
+              </Checkbox>
+              <Checkbox
+                isChecked={outputFormats.includes("srt")}
+                onChange={() => handleOutputFormatChange("srt")}
+              >
+                srt
+              </Checkbox>
+              <Checkbox
+                isChecked={outputFormats.includes("vtt")}
+                onChange={() => handleOutputFormatChange("vtt")}
+              >
+                vtt
+              </Checkbox>
+              <Checkbox
+                isChecked={outputFormats.includes("json")}
+                onChange={() => handleOutputFormatChange("json")}
+              >
+                json
+              </Checkbox>
             </Stack>
-          </RadioGroup>
-        </FormControl>
+          </FormControl>
+        </Card>
 
-        <Heading as="h2" size="md" mt={8} mb={4}>
-          Export
-        </Heading>
-        <FormControl mb={4}>
-          <FormLabel>Output formats</FormLabel>
-          <Stack spacing={2}>
-            <Checkbox
-              isChecked={outputFormats.includes("txt")}
-              onChange={() => handleOutputFormatChange("txt")}
-            >
-              txt
-            </Checkbox>
-            <Checkbox
-              isChecked={outputFormats.includes("srt")}
-              onChange={() => handleOutputFormatChange("srt")}
-            >
-              srt
-            </Checkbox>
-            <Checkbox
-              isChecked={outputFormats.includes("vtt")}
-              onChange={() => handleOutputFormatChange("vtt")}
-            >
-              vtt
-            </Checkbox>
-            <Checkbox
-              isChecked={outputFormats.includes("json")}
-              onChange={() => handleOutputFormatChange("json")}
-            >
-              json
-            </Checkbox>
-          </Stack>
-        </FormControl>
+        <Card className="card">
+          <Heading className="heading">
+            Post Processing
+          </Heading>
 
-        <Heading as="h2" size="md" mt={8} mb={4}>
-          Post Processing
-        </Heading>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Identify the speakers</FormLabel>
+            <Switch
+              className="switch"
+              isChecked={speakerIdentification}
+              onChange={() =>
+                handleSpeakerIdentificationChange(!speakerIdentification)
+              }
+            />
+          </FormControl>
 
-        <FormControl display="flex" justifyContent="space-between" mb={4}>
-          <FormLabel>Identify the speakers</FormLabel>
-          <Switch
-            isChecked={speakerIdentification}
-            onChange={() =>
-              handleSpeakerIdentificationChange(!speakerIdentification)
-            }
-          />
-        </FormControl>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Detect Word Level Timestamps</FormLabel>
+            <Switch
+              className="switch"
+              isChecked={wordLevelTimestamps}
+              onChange={() =>
+                handleWordLevelTimestampsChange(!wordLevelTimestamps)
+              }
+            />
+          </FormControl>
 
-        <FormControl display="flex" justifyContent="space-between" mb={4}>
-          <FormLabel>Detect Word Level Timestamps</FormLabel>
-          <Switch
-            isChecked={wordLevelTimestamps}
-            onChange={() =>
-              handleWordLevelTimestampsChange(!wordLevelTimestamps)
-            }
-          />
-        </FormControl>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Do Auto-corrections and punctuations</FormLabel>
+            <Switch
+              isChecked={autoCorrection}
+              onChange={() => handleAutoCorrectionChange(!autoCorrection)}
+            />
+          </FormControl>
 
-        <FormControl display="flex" justifyContent="space-between" mb={4}>
-          <FormLabel>Do Auto-corrections and punctuations</FormLabel>
-          <Switch
-            isChecked={autoCorrection}
-            onChange={() => handleAutoCorrectionChange(!autoCorrection)}
-          />
-        </FormControl>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Enable Profanity filtering</FormLabel>
+            <Switch
+              isChecked={profanityFiltering}
+              onChange={() => handleProfanityFilteringChange(!profanityFiltering)}
+            />
+          </FormControl>
+        </Card>
 
-        <FormControl display="flex" justifyContent="space-between" mb={4}>
-          <FormLabel>Enable Profanity filtering</FormLabel>
-          <Switch
-            isChecked={profanityFiltering}
-            onChange={() => handleProfanityFilteringChange(!profanityFiltering)}
-          />
-        </FormControl>
+        <Card className="card">
+          <Heading className="heading">
+            Notifications
+          </Heading>
 
-        <Heading as="h2" size="md" mt={8} mb={4}>
-          Notifications
-        </Heading>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Notify on transcription job completion</FormLabel>
+            <Switch
+              isChecked={completionNotification}
+              onChange={() =>
+                handleCompletionNotificationChange(!completionNotification)
+              }
+            />
+          </FormControl>
+        </Card>
 
-        <FormControl display="flex" justifyContent="space-between" mb={4}>
-          <FormLabel>Notify on transcription job completion</FormLabel>
-          <Switch
-            isChecked={completionNotification}
-            onChange={() =>
-              handleCompletionNotificationChange(!completionNotification)
-            }
-          />
-        </FormControl>
+        <Card className="card">
+          <Heading className="heading">
+            Themes
+          </Heading>
 
-        <Heading as="h2" size="md" mt={8} mb={4}>
-          Themes
-        </Heading>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Enable dark mode</FormLabel>
+            <Switch
+              isChecked={darkMode}
+              onChange={() => handleDarkModeChange(!darkMode)}
+            />
+          </FormControl>
+        </Card>
 
-        <FormControl display="flex" justifyContent="space-between" mb={4}>
-          <FormLabel>Enable dark mode</FormLabel>
-          <Switch
-            isChecked={darkMode}
-            onChange={() => handleDarkModeChange(!darkMode)}
-          />
-        </FormControl>
+        <Card className="card">
+          <Heading className="heading">
+            Storage
+          </Heading>
 
-        <Heading as="h2" size="md" mt={8} mb={4}>
-          Storage
-        </Heading>
-
-        <FormControl display="flex" justifyContent="space-between" mb={4}>
-          <FormLabel>Cached assets</FormLabel>
-          <Button mb={4}>Download All</Button>
-          <Button mb={4}>Clear All</Button>
-        </FormControl>
-      </Card>
-    </Box>
+          <FormControl className="form-control">
+            <FormLabel className="form-label">Cached assets</FormLabel>
+            <Button mb={4}>Download All</Button>
+            <Button mb={4}>Clear All</Button>
+          </FormControl>
+        </Card>
+      </Box>
+    </Box >
   );
 }
-
-/**
- *  Primary Preferrences
- *  Default Language: [Select]
- *  Transcription Mode: [Radio]
- *
- *  Export
- *  Default Location: [File selector]
- *  Output Formats: [Checkboxes]
- *
- *  Post-Processing:
- *  Identify speakers [Toggle]
- *  Identify Word level timestamps [Toggle]
- *  Punctuation [Toggle]
- *  Profanity Filter [Toggle]
- *
- *  Notifications:
- *  Notify on transcription completion: [Toggle]
- *
- *  Themes
- *  Dark mode: [Toggle]
- *
- *  Storage
- *  Cached Assets (Download All) (Clear All)
- *
- */

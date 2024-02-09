@@ -1,31 +1,21 @@
-import { Flex, Text, Spinner, Center, VStack } from "@chakra-ui/react";
-import { ICON_COLOR_LIGHT } from "constants/ThemeConstants";
+import { Flex, Text, Spinner, VStack } from "@chakra-ui/react";
 
 export default function Loading(props) {
   const { loadingText } = props;
 
   return (
-    <Center>
-      <Flex>
-        <VStack>
-          <Text
-            mr={4}
-            mb={4}
-            color={ICON_COLOR_LIGHT}
-            fontSize="lg"
-            fontWeight="700"
-          >
-            {loadingText}
-          </Text>
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="white"
-            color={ICON_COLOR_LIGHT}
-            size="xl"
-          />
-        </VStack>
-      </Flex>
-    </Center>
+    <Flex className="loading-container">
+      <VStack className="vstack-container">
+        <Text
+          className="loading-text"
+        >
+          {loadingText}
+        </Text>
+        <Spinner
+          className="spinner"
+          speed="0.45s"
+        />
+      </VStack>
+    </Flex>
   );
 }

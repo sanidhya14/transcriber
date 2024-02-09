@@ -1,0 +1,76 @@
+.table {
+    width: 100%;
+    margin-bottom: 24px;
+
+    thead {
+        tr {
+            th {
+                padding-right: 10px;
+                color: $appOutlineSecondaryColor;
+                border-color: $appBackgroundTertiaryColor;
+
+                .header-flex {
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: 10px;
+
+                    @media screen and (min-width: 768px) {
+                        font-size: 12px;
+                    }
+
+                    color: gray.400;
+                }
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            cursor: pointer;
+
+            td {
+                font-size: 14px;
+                line-height: 2;
+                min-width: 150px;
+
+                @media screen and (min-width: 768px) {
+                    min-width: 200px;
+                }
+
+                border-color: transparent;
+
+                .checkbox-container {
+                    align-items: center;
+                    margin-right: 10px;
+                }
+
+                .text-container {
+                    margin-right: 10px;
+                    color: $appOutlineColor;
+                    font-size: sm;
+                    font-weight: 700;
+                }
+            }
+
+            &:hover {
+                background-color: $appBackgroundTertiaryColor;
+            }
+        }
+    }
+}
+
+.pagination {
+    justify-content: end;
+    padding: 0 25px;
+    align-items: center;
+
+    button {
+        font-size: 14px;
+        margin-right: 2px;
+        color: $appOutlineColor;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

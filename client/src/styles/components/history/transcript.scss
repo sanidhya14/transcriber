@@ -1,0 +1,109 @@
+.transcript-grid-container {
+    display: grid;
+    width: 100%;
+    grid-template-rows: 1fr 4fr;
+    height: 100vh;
+    color: $appOutlineColor;
+
+    .hstack-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .heading-container {
+            font-size: 2xl;
+        }
+
+        .spacer {
+            flex-grow: 1;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            .text-container {
+                font-size: sm;
+                color: $appBackgroundColor;
+            }
+        }
+
+        .icon-container {
+            width: 20px;
+            height: 20px;
+            margin-right: 2px;
+            color: $appBackgroundColor;
+        }
+
+        .text-container {
+            font-size: sm;
+        }
+    }
+
+    .date-time-section {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+
+        .row-stack {
+            display: flex;
+            flex-direction: row;
+            margin-right: 20px;
+        }
+
+        .icon-container {
+            width: 20px;
+            height: 20px;
+            margin-right: 2px;
+        }
+
+        .text-container {
+            font-size: sm;
+        }
+    }
+
+    .transcription-vstack-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .transcript-segment-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+
+            .transcript-hstack-container {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                .avatar {
+                    width: 20px;
+                    height: 20px;
+                }
+
+                .speaker-text-container {
+                    font-weight: bold;
+                }
+
+                .timestamp-text-container {
+                    color: #808080;
+                    font-weight: bold;
+                    font-size: smaller;
+
+                    &:hover {
+                        color: #007bff;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+
+    .edit-input-box {
+        width: 100vh;
+    }
+}

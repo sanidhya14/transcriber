@@ -13,7 +13,7 @@ import { FaPlay, FaPause } from "react-icons/fa";
 export default function AudioPlayer(props) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(120);
 
   useEffect(() => {
     const audioElement = props.audio;
@@ -26,8 +26,8 @@ export default function AudioPlayer(props) {
     });
 
     return () => {
-      audioElement.removeEventListener("loadedmetadata", () => {});
-      audioElement.removeEventListener("timeupdate", () => {});
+      audioElement.removeEventListener("loadedmetadata", () => { });
+      audioElement.removeEventListener("timeupdate", () => { });
     };
   }, [props.audio]);
 
@@ -46,47 +46,32 @@ export default function AudioPlayer(props) {
   };
 
   return (
-    <Flex
-      position="fixed"
-      bottom="10px"
-      left="50%"
-      transform="translateX(-50%)"
-      bg="white"
-      p="10px"
-      pl="20px"
-      borderRadius="30px"
-      boxShadow="0 4px 8px rgba(0, 0, 0, 0.2)"
-      alignItems="center"
-      justifyContent="space-between"
-      width="500px"
-    >
+    <Flex className="audio-player-container">
       <IconButton
+        className="icon-button"
         icon={isPlaying ? <FaPause /> : <FaPlay />}
         onClick={togglePlay}
-        borderRadius="50%"
-        bg="white"
-        fontSize="1.5rem"
         aria-label={isPlaying ? "Pause" : "Play"}
-        _hover={{ bg: "gray.300" }}
       />
-      <Flex align="center" w="100%" ml="10px">
-        <Text fontSize="sm" mr="15px">
+      <Flex className="play-container">
+        <Text className="text-container">
           {formatTime(currentTime)}
         </Text>
         <Slider
-          flex="1"
+          className="slider-container"
+          // Hack for now
+          colorScheme="pink"
           min={0}
           max={duration}
           value={currentTime}
           onChange={onSliderChange}
-          colorScheme="blue"
         >
           <SliderTrack>
             <SliderFilledTrack />
           </SliderTrack>
           <SliderThumb />
         </Slider>
-        <Text fontSize="sm" ml="15px">
+        <Text className="text-container">
           {formatTime(duration)}
         </Text>
       </Flex>
