@@ -1,0 +1,63 @@
+.bannerFlex {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    background-size: cover;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-radius: 30px;
+}
+
+.bannerGrid {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.bannerBox {
+    height: 120px;
+}
+
+.bannerHeading {
+    font-size: 2.2rem;
+    color: $appOutlineColor;
+    margin-bottom: 14px;
+    font-weight: 700;
+    line-height: 32px;
+}
+
+.bannerDescriptionText {
+    font-size: 1.2rem;
+    color: $appOutlineSecondaryColor;
+    font-weight: 500;
+    line-height: 28px;
+}
+
+.banner-footer {
+    align-items: center;
+}
+
+.bannerButton {
+    background-color: $appOutlineColor;
+    color: $appBackgroundColor;
+    font-weight: 500;
+    font-size: 1rem;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 27px;
+    padding-right: 27px;
+    margin-right: 38px;
+    width: 130px;
+}
+
+.bannerButton:hover {
+    background-color: $appOutlineSecondaryColor;
+}
+
+.banner-link {
+    color: $appOutlineColor;
+    font-size: 1rem;
+    font-weight: 500;
+}

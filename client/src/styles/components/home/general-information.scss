@@ -1,0 +1,42 @@
+@import "../base/card.scss";
+
+.general-card-header {
+    color: $appOutlineColor;
+    font-size: large;
+    margin-right: 26px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.information-card-heading {
+    color: $appOutlineSecondaryColor;
+    font-weight: 500;
+    font-size: small;
+}
+
+.information-card-text {
+    color: $appOutlineSecondaryColor;
+    font-weight: 500;
+    font-size: medium;
+}
+
+.general-information-card {
+    color: $appOutlineColor;
+    font-weight: bold;
+    text-align: center;
+    font-size: 3xl;
+    margin-top: 10px;
+    margin-bottom: 40px;
+}
+
+.simple-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.info-card {
+    @extend .card;
+    background: linear-gradient(to bottom, $appBackgroundTertiaryColor, $appBackgroundTertiaryColor);
+}
+

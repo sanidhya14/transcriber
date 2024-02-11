@@ -1,0 +1,34 @@
+$gap: 20px;
+
+.home-main-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    column-gap: $gap;
+    row-gap: $gap;
+    margin-bottom: $gap;
+}
+
+.banner-grid-item {
+    grid-column-start: auto;
+    grid-column-end: auto;
+    grid-row-start: auto;
+    grid-row-end: auto;
+
+    &:nth-child(1) {
+        grid-column-end: span 3;
+        grid-row-end: span 1;
+    }
+}
+
+.usage-metrics-grid-item {
+    grid-column-start: auto;
+    grid-column-end: auto;
+    grid-row-start: auto;
+    grid-row-end: auto;
+
+    &:nth-child(2) {
+        grid-column-end: span 2;
+        grid-row-end: span 1;
+    }
+}
