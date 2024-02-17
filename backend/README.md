@@ -15,7 +15,9 @@ This is the Django hosted backend for the application.
 - [ ] Test Export API
 - [ ] Test update transcript API
 - [ ] Add request/response models for rest CRUD APIs
-
+- [ ] Fix bug -> before assigning speaker to work, check if speaker is present in segment
+- [ ] Fix bug for no diarization
+- [ ] Bug fix: create output dir, if not present
 ## Project structure: [Remove once setup]
 
 ```

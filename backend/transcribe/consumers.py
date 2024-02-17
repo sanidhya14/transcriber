@@ -113,7 +113,7 @@ class TranscribeConsumer(WebsocketConsumer):
 
             # Store results in DB
             self.persist_results_in_db(
-                request_id=request_id, result=transcription_result_timestamp_restored
+                request_id=request_id, request=request, result=transcription_result_timestamp_restored
             )
             notify(
                 self,
@@ -288,25 +288,27 @@ class TranscribeConsumer(WebsocketConsumer):
 
         return result
 
-    def persist_results_in_db(self, request_id: str, result: dict):
+    def persist_results_in_db(self, request_id: str, request: TranscriptionRequest, result: dict):
         speakerMap = {}
         for segment in result["segments"]:
-            childSpeakerMap = {}
-            childSpeakerMap["speakerId"] = segment["speaker"]
-            childSpeakerMap["speakerName"] = segment["speaker"]
+            if request.diarization_options.enabled == True:
+                childSpeakerMap = {}
+                childSpeakerMap["speakerId"] = segment["speaker"]
+                childSpeakerMap["speakerName"] = segment["speaker"]
+                speakerMap[childSpeakerMap["speakerId"]] = childSpeakerMap
+
             create_transcript_segment(
                 request_id=request_id,
                 params={
                     "startTimeInSeconds": float(segment["start"]),
                     "transcriptSegment": {
-                        "speakerId": segment["speaker"],
+                        "speakerId": segment.get("speaker", ""),
                         "startTimeInSeconds": segment["start"],
                         "endTimeInSeconds": segment["end"],
                         "text": segment["text"],
                     },
                 },
             )
-            speakerMap[childSpeakerMap["speakerId"]] = childSpeakerMap
 
         update_transcript_metadata(
             request_id=request_id,

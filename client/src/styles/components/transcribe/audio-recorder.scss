@@ -1,0 +1,63 @@
+.audio-recorder-viewer {
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
+
+.audio-recorder-container-main {
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: 1fr 6fr 2fr;
+
+    .border {
+        background-color: $appBackgroundTertiaryColor;
+        justify-content: center;
+        align-items: center;
+
+        .recording-time {
+            font-size: sm;
+            font-weight: 300;
+            color: $appOutlineSecondaryColor;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+    }
+
+    .audio-waveform-container {
+        background-color: $appBackgroundColor;
+        width: 100%;
+        height: 100%;
+    }
+
+    .audio-recorder-control-buttons-container {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+
+        .stop-button {
+            color: #d93025;
+            height: 40px;
+            width: 40px;
+            background-color: $appBackgroundTertiaryColor;
+            margin: 10px;
+        }
+
+        .pause-button {
+            color: $appOutlineSecondaryColor;
+            height: 40px;
+            width: 40px;
+            background-color: $appBackgroundTertiaryColor;
+            margin: 10px;
+        }
+    }
+}
+
+.audio-visualizer {
+    height: 100%;
+    width: 100%;
+}
